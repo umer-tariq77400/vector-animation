@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Vector Field Generator</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        /* Style for the explanation modal content */
+        #explanation-content p {
+            margin-bottom: 1rem;
+        }
+        #explanation-content ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white font-inter">
+
+    <!-- Main content -->
+    <main class="min-h-screen w-full flex flex-col items-center justify-center p-4 md:p-8">
+        <div class="text-center mb-6 max-w-5xl w-full">
+            <h1 class="text-3xl md:text-5xl font-bold mb-3 text-cyan-400">Gemini Vector Field Generator</h1>
+            
+            <!-- NEW COLLAPSIBLE DESCRIPTION SECTION -->
+            <div class="mb-4 bg-gray-800/30 p-3 rounded-xl text-left shadow-inner">
+                <button id="toggle-description" class="w-full flex items-center justify-between text-base font-semibold text-gray-300 hover:text-cyan-400 transition duration-200">
+                    What is a 2D Vector Field?
+                    <span id="toggle-icon" class="transform transition-transform duration-300 text-lg">▼</span>
+                </button>
+                <div id="vector-description-content" class="mt-2 text-gray-400 text-sm leading-relaxed hidden border-t border-gray-700 pt-2">
+                    <p>A **2D vector field** is a function that assigns a vector (a quantity with both magnitude and direction) to every point in a 2D space. It is mathematically represented as $f(x,y) = P(x,y)\mathbf{i} + Q(x,y)\mathbf{j}$.</p>
+                    <ul class="list-disc list-inside mt-2 space-y-1">
+                        <li>$P(x,y)$ is the expression for the **horizontal movement ($x$-component)**.</li>
+                        <li>$Q(x,y)$ is the expression for the **vertical movement ($y$-component)**.</li>
+                    </ul>
+                    <p class="mt-2">In this visualizer, the particles move along the paths dictated by the vector at their current position. You can use the Gemini generator above to describe your own functions!</p>
+                </div>
+            </div>
+            <!-- END NEW COLLAPSIBLE DESCRIPTION SECTION -->
+
+            <p id="equation-description" class="text-lg md:text-xl text-gray-300 transition-all duration-300">
+                Visualizing <code class="bg-gray-800 text-cyan-300 px-2 py-1 rounded">f(x,y) = (sin(x)+sin(y))î + (sin(x)-sin(y))ĵ</code>
+            </p>
+        </div>
+
+        <!-- NEW: Gemini Interaction Panel -->
+        <div class="w-full max-w-5xl mb-4 p-4 bg-gray-800/50 border border-gray-700 rounded-lg shadow-lg">
+            <label for="prompt-input" class="block text-sm font-medium text-cyan-400 mb-2">Describe a vector field you want to see:</label>
+            <textarea id="prompt-input" rows="2" class="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="e.g., 'a swirling vortex in the middle', 'a flow moving right', 'complex waves'"></textarea>
+            
+            <div class="flex flex-col sm:flex-row gap-3 mt-3">
+                <button id="generate-button" class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200">
+                    Generate New Field ✨
+                </button>
+                <button id="explain-button" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200">
+                    Explain Current Field ✨
+                </button>
+            </div>
+            <p id="api-status" class="text-center text-sm text-gray-400 mt-3 h-5"></p> <!-- Status message area -->
+
+            <!-- NEW: Preset Buttons -->
+            <div class="mt-4 pt-3 border-t border-gray-700">
+                <p class="text-sm font-medium text-cyan-400 mb-2">Or, try a preset field:</p>
+                <div class="grid grid-cols-3 gap-3">
+                    <button data-preset="vortex" class="preset-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-lg text-xs transition-all duration-200">
+                        🌀 Central Vortex
+                    </button>
+                    <button data-preset="wave" class="preset-button bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-3 rounded-lg text-xs transition-all duration-200">
+                        🌊 Complex Waves
+                    </button>
+                    <button data-preset="sink" class="preset-button bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-lg text-xs transition-all duration-200">
+                        ⚫ Central Sink
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- The canvas element where the visualization will be drawn -->
+        <div class="w-full max-w-5xl aspect-[4/3] bg-gray-950 rounded-lg shadow-2xl border-2 border-cyan-700/50 overflow-hidden">
+            <canvas id="flowCanvas"></canvas>
+        </div>
+    </main>
+
+    <!-- NEW: Explanation Modal -->
+    <div id="explanation-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 hidden">
+        <div class="bg-gray-800 w-full max-w-2xl rounded-lg shadow-2xl border border-gray-700 max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-4 border-b border-gray-700">
+                <h2 class="text-2xl font-bold text-cyan-400">Field Explained ✨</h2>
+                <button id="close-modal-button" class="text-gray-400 hover:text-white">&times;</button>
+            </div>
+            <div id="explanation-content" class="p-6 text-gray-300 leading-relaxed">
+                <!-- Content will be injected by JavaScript -->
+                <p>Loading explanation...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Canvas and Particle Config ---
+            const canvas = document.getElementById('flowCanvas');
+            const ctx = canvas.getContext('2d');
+            const NUM_PARTICLES = 1500;
+            const PARTICLE_SPEED = 1;
+            const FIELD_SCALE = 8;
+            const FADE_OPACITY = 0.05;
+            const HUE_START = 180;
+            const HUE_END = 240;
+
+            // --- DOM Element Refs ---
+            const generateButton = document.getElementById('generate-button');
+            const explainButton = document.getElementById('explain-button');
+            const promptInput = document.getElementById('prompt-input');
+            const apiStatus = document.getElementById('api-status');
+            const equationDescription = document.getElementById('equation-description');
+            const explanationModal = document.getElementById('explanation-modal');
+            const explanationContent = document.getElementById('explanation-content');
+            const closeModalButton = document.getElementById('close-modal-button');
+            const presetButtons = document.querySelectorAll('.preset-button');
+
+            // NEW Refs for description
+            const toggleDescriptionButton = document.getElementById('toggle-description');
+            const descriptionContent = document.getElementById('vector-description-content');
+            const toggleIcon = document.getElementById('toggle-icon');
+
+            // --- State ---
+            let particles = [];
+            let canvasWidth = 0;
+            let canvasHeight = 0;
+            
+            // --- Gemini API State ---
+            const apiKey = ""; // Per instructions, leave empty.
+            let vectorFunction;
+            let currentVxString = "Math.sin(x) + Math.sin(y)";
+            let currentVyString = "Math.sin(x) - Math.sin(y)";
+            let currentDescription = "f(x,y) = (sin(x)+sin(y))î + (sin(x)-sin(y))ĵ";
+
+            // --- Preset Definitions ---
+            const PRESENTS = {
+                vortex: {
+                    // f(x,y) = -(y - 4)î + (x - 4)ĵ - creates a counter-clockwise rotation centered at (4, 4)
+                    vx: `-(y - (${FIELD_SCALE} / 2))`,
+                    vy: `(x - (${FIELD_SCALE} / 2))`,
+                    desc: `f(x,y) = -(y - 4)î + (x - 4)ĵ (Central Vortex)`
+                },
+                wave: {
+                    // f(x,y) = 2 sin(y)î + 2 cos(x)ĵ - creates a complex flow with horizontal and vertical waves
+                    vx: `Math.sin(y) * 2`,
+                    vy: `Math.cos(x) * 2`,
+                    desc: `f(x,y) = 2 sin(y)î + 2 cos(x)ĵ (Complex Waves)`
+                },
+                sink: {
+                    // f(x,y) = -0.5(x-4)î - 0.5(y-4)ĵ - creates a flow directly toward the center (4, 4)
+                    vx: `-(x - (${FIELD_SCALE} / 2)) * 0.5`,
+                    vy: `-(y - (${FIELD_SCALE} / 2)) * 0.5`,
+                    desc: `f(x,y) = -0.5(x-4)î - 0.5(y-4)ĵ (Central Sink/Attractor)`
+                }
+            };
+
+            /**
+             * Updates the master function used for the vector field.
+             * Uses `new Function` for safe dynamic code execution.
+             */
+            function updateVectorFunction(vxString, vyString, description) {
+                try {
+                    // `with(Math)` provides access to Math.sin, Math.cos, etc.
+                    vectorFunction = new Function('x', 'y', 
+                        `with(Math) { return { x: (${vxString}), y: (${vyString}) }; }`
+                    );
+                    
+                    // Store current state
+                    currentVxString = vxString;
+                    currentVyString = vyString;
+                    currentDescription = description;
+
+                    // Update UI
+                    equationDescription.innerHTML = `Visualizing <code class="bg-gray-800 text-cyan-300 px-2 py-1 rounded">${description}</code>`;
+                    
+                    return true;
+                } catch (e) {
+                    console.error("Error compiling new vector function:", e);
+                    apiStatus.textContent = `Error: Generated function was invalid. ${e.message}`;
+                    return false;
+                }
+            }
+
+            /**
+             * Fetches from the Gemini API with exponential backoff.
+             */
+            async function fetchGeminiApi(payload, retries = 3, delay = 1000) {
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+                for (let i = 0; i < retries; i++) {
+                    try {
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                        }
+
+                        const result = await response.json();
+                        
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            
+                            return result.candidates[0].content.parts[0].text;
+                        } else {
+                            throw new Error("Invalid response structure from API.");
+                        }
+                    } catch (error) {
+                        console.error("API call failed:", error);
+                        if (i === retries - 1) {
+                            throw error; // Re-throw last error
+                        }
+                        await new Promise(res => setTimeout(res, delay));
+                        delay *= 2; // Exponential backoff
+                    }
+                }
+            }
+
+            // --- Gemini Feature Handlers ---
+
+            /**
+             * ✨ Handles clicking the "Generate New Field" button.
+             */
+            async function handleGenerateClick() {
+                const userPrompt = promptInput.value;
+                if (!userPrompt) {
+                    apiStatus.textContent = "Please enter a description first.";
+                    return;
+                }
+
+                apiStatus.textContent = "✨ Generating new field...";
+                generateButton.disabled = true;
+
+                const systemPrompt = `You are a mathematical function generator. The user wants a 2D vector field.
+Return *only* a JSON object with two string fields: "vx" and "vy".
+These strings must be valid JavaScript expressions using 'x', 'y', and Math functions (e.g., Math.sin, Math.cos, Math.exp, Math.PI).
+The (x, y) coordinates will range from 0 to about 8.
+Do not use comments. Do not use markdown.
+Example for "a simple swirl": {"vx": "-y + 4", "vy": "x - 4"}`;
+
+                const payload = {
+                    contents: [{ parts: [{ text: userPrompt }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                "vx": { "type": "STRING" },
+                                "vy": { "type": "STRING" }
+                            },
+                            required: ["vx", "vy"]
+                        }
+                    }
+                };
+                
+                try {
+                    const jsonString = await fetchGeminiApi(payload);
+                    const result = JSON.parse(jsonString);
+
+                    if (result.vx && result.vy) {
+                        // Successfully updated function
+                        const success = updateVectorFunction(result.vx, result.vy, `Custom field: "${userPrompt}"`);
+                        if (success) {
+                            setup(); // Re-initialize the particle simulation
+                            apiStatus.textContent = "New field generated!";
+                            promptInput.value = "";
+                        }
+                    } else {
+                        throw new Error("API response was missing 'vx' or 'vy'.");
+                    }
+
+                } catch (error) {
+                    console.error("Generation failed:", error);
+                    apiStatus.textContent = `Error: ${error.message}`;
+                } finally {
+                    generateButton.disabled = false;
+                }
+            }
+
+            /**
+             * ✨ Handles clicking the "Explain Current Field" button.
+             */
+            async function handleExplainClick() {
+                explanationModal.classList.remove('hidden');
+                explanationContent.innerHTML = "<p>✨ Thinking... please wait.</p>";
+                
+                const systemPrompt = `You are a helpful math tutor. Explain the mathematical properties of the following 2D vector field in simple, easy-to-understand terms.
+The field is defined as f(x,y) = (vx)î + (vy)ĵ.
+The user's (x, y) coordinates range from 0 to 8.
+Format your answer in simple HTML with <p> and <ul> tags. Do not use markdown.`;
+
+                const userQuery = `Explain the field:
+vx = ${currentVxString}
+vy = ${currentVyString}
+(Description: ${currentDescription})
+What kind of patterns (swirls, waves, flows) would this create and why?`;
+
+                const payload = {
+                    contents: [{ parts: [{ text: userQuery }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                };
+
+                try {
+                    const explanationText = await fetchGeminiApi(payload);
+                    explanationContent.innerHTML = explanationText;
+                } catch (error) {
+                    console.error("Explanation failed:", error);
+                    explanationContent.innerHTML = `<p class="text-red-400">Sorry, I couldn't generate an explanation. ${error.message}</p>`;
+                }
+            }
+
+            // --- Preset Handler ---
+            function loadPreset(presetId) {
+                const preset = PRESENTS[presetId];
+                if (preset) {
+                    updateVectorFunction(preset.vx, preset.vy, preset.desc);
+                    setup(); // Re-initialize particles
+                    apiStatus.textContent = `Preset loaded: ${preset.desc}`;
+                }
+            }
+
+
+            // --- Event Listeners ---
+            generateButton.addEventListener('click', handleGenerateClick);
+            explainButton.addEventListener('click', handleExplainClick);
+            closeModalButton.addEventListener('click', () => {
+                explanationModal.classList.add('hidden');
+            });
+            
+            // New event listener for preset buttons
+            presetButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const presetId = e.currentTarget.getAttribute('data-preset');
+                    if (presetId) {
+                        loadPreset(presetId);
+                    }
+                });
+            });
+
+            // NEW: Listener for the collapsible description
+            toggleDescriptionButton.addEventListener('click', () => {
+                const isHidden = descriptionContent.classList.toggle('hidden');
+                // Toggle the icon: Down arrow (▼) when collapsed, Up arrow (▲) when open
+                toggleIcon.textContent = isHidden ? '▼' : '▲';
+            });
+
+            // --- Canvas Logic (Original) ---
+            
+            /**
+             * Gets the vector at a given mathematical coordinate.
+             */
+            function getVectorAt(x, y) {
+                try {
+                    if (vectorFunction) {
+                        return vectorFunction(x, y);
+                    }
+                } catch (e) {
+                    // Fallback for bad runtime function (e.g., division by zero)
+                    return { x: 0, y: 0 };
+                }
+                return { x: 0, y: 0 }; // Default if function isn't set
+            }
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * canvasWidth;
+                    this.y = Math.random() * canvasHeight;
+                    this.vx = 0;
+                    this.vy = 0;
+                }
+                update() {
+                    const mathX = map(this.x, 0, canvasWidth, 0, FIELD_SCALE);
+                    const mathY = map(this.y, 0, canvasHeight, 0, FIELD_SCALE);
+                    const vector = getVectorAt(mathX, mathY);
+                    this.x += vector.x * PARTICLE_SPEED;
+                    this.y += vector.y * PARTICLE_SPEED;
+                    this.vx = vector.x;
+                    this.vy = vector.y;
+
+                    // --- FIX: Check for stuck particles ---
+                    // Calculate the magnitude (squared) of the vector
+                    const magnitudeSq = (this.vx * this.vx) + (this.vy * this.vy);
+
+                    // --- NEW: User's idea ---
+                    // Add a small, random chance (e.g., 0.1%) for any particle to respawn
+                    const randomRespawnChance = 0.001;
+
+                    // Reset if off-screen OR if it's "stuck" (magnitude is very small)
+                    // OR by random chance to keep the field populated
+                    if (this.x < 0 || this.x > canvasWidth || this.y < 0 || this.y > canvasHeight || magnitudeSq < 0.0001 || Math.random() < randomRespawnChance) {
+                        this.reset();
+                    }
+                }
+                draw() {
+                    const hue = map(this.x, 0, canvasWidth, HUE_START, HUE_END);
+                    ctx.fillStyle = `hsl(${hue}, 80%, 60%)`;
+                    ctx.fillRect(this.x, this.y, 1, 1);
+                }
+            }
+
+            function map(value, inMin, inMax, outMin, outMax) {
+                return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+            }
+
+            function animate() {
+                ctx.fillStyle = `rgba(17, 24, 39, ${FADE_OPACITY})`;
+                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+                for (const particle of particles) {
+                    particle.update();
+                    particle.draw();
+                }
+                requestAnimationFrame(animate);
+            }
+
+            function setup() {
+                const container = canvas.parentElement;
+                const dpr = window.devicePixelRatio || 1;
+                const rect = container.getBoundingClientRect();
+                canvas.width = rect.width * dpr;
+                canvas.height = rect.height * dpr;
+                ctx.scale(dpr, dpr);
+                canvasWidth = rect.width;
+                canvasHeight = rect.height;
+                particles = [];
+                for (let i = 0; i < NUM_PARTICLES; i++) {
+                    particles.push(new Particle());
+                }
+                ctx.fillStyle = '#111827';
+                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            }
+
+            // --- Start ---
+            
+            // Set the initial vector function
+            updateVectorFunction(currentVxString, currentVyString, currentDescription);
+            
+            // Set up the canvas and particles
+            setup();
+
+            // Add resize listener
+            window.addEventListener('resize', setup);
+
+            // Start the animation loop
+            animate();
+        });
+    </script>
+</body>
+</html>
