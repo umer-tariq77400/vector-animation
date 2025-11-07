@@ -10,6 +10,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Load MathJax for LaTeX rendering -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            startup: {
+                ready: () => {
+                    MathJax.startup.defaultReady();
+                    // Typeset the page when MathJax is ready
+                    MathJax.typesetPromise().catch((err) => console.log('MathJax error:', err));
+                }
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -76,10 +96,10 @@
                     <span id="toggle-icon" class="transform transition-transform duration-300 text-lg">▼</span>
                 </button>
                 <div id="vector-description-content" class="mt-2 text-gray-400 text-sm leading-relaxed hidden border-t border-gray-700 pt-2">
-                    <p>A **2D vector field** is a function that assigns a vector (a quantity with both magnitude and direction) to every point in a 2D space. It is mathematically represented as $f(x,y) = P(x,y)\mathbf{i} + Q(x,y)\mathbf{j}$.</p>
+                    <p>A <strong>2D vector field</strong> is a function that assigns a vector (a quantity with both magnitude and direction) to every point in a 2D space. It is mathematically represented as $f(x,y) = P(x,y)\mathbf{i} + Q(x,y)\mathbf{j}$.</p>
                     <ul class="list-disc list-inside mt-2 space-y-1">
-                        <li>$P(x,y)$ is the expression for the **horizontal movement ($x$-component)**.</li>
-                        <li>$Q(x,y)$ is the expression for the **vertical movement ($y$-component)**.</li>
+                        <li>$P(x,y)$ is the expression for the <strong>horizontal movement ($x$-component)</strong>.</li>
+                        <li>$Q(x,y)$ is the expression for the <strong>vertical movement ($y$-component)</strong>.</li>
                     </ul>
                     <p class="mt-2">In this visualizer, the particles move along the paths dictated by the vector at their current position. You can use the Gemini generator above to describe your own functions!</p>
                 </div>
@@ -485,7 +505,8 @@ Example for "a simple swirl": {"vx": "-y + 4", "vy": "x - 4"}`;
                 const systemPrompt = `You are a helpful math tutor. Explain the mathematical properties of the following 2D vector field in simple, easy-to-understand terms.
 The field is defined as f(x,y) = (vx)î + (vy)ĵ.
 The user's (x, y) coordinates range from 0 to 8.
-Format your answer in simple HTML with <p> and <ul> tags. Do not use markdown.`;
+Format your answer in simple HTML with <p> and <ul> tags. Do not use markdown.
+Use LaTeX notation enclosed in dollar signs $ for mathematical expressions (e.g., $f(x,y)$, $\\mathbf{i}$, $\\mathbf{j}$).`;
 
                 const userQuery = `Explain the field:
 vx = ${currentVxString}
@@ -501,6 +522,10 @@ What kind of patterns (swirls, waves, flows) would this create and why?`;
                 try {
                     const explanationText = await fetchGeminiApi(payload);
                     explanationContent.innerHTML = explanationText;
+                    // Render LaTeX with MathJax
+                    if (window.MathJax && window.MathJax.typesetPromise) {
+                        MathJax.typesetPromise([explanationContent]).catch((err) => console.log('MathJax typeset error:', err));
+                    }
                 } catch (error) {
                     console.error("Explanation failed:", error);
                     explanationContent.innerHTML = `<p class="text-red-400">Sorry, I couldn't generate an explanation. ${error.message}</p>`;
@@ -832,6 +857,10 @@ ${jsCode}
                 const isHidden = descriptionContent.classList.toggle('hidden');
                 // Toggle the icon: Down arrow (▼) when collapsed, Up arrow (▲) when open
                 toggleIcon.textContent = isHidden ? '▼' : '▲';
+                // Render LaTeX when showing the description
+                if (!isHidden && window.MathJax && window.MathJax.typesetPromise) {
+                    MathJax.typesetPromise([descriptionContent]).catch((err) => console.log('MathJax typeset error:', err));
+                }
             });
 
             // --- Canvas Logic (Original) ---
