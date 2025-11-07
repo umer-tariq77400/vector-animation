@@ -10,6 +10,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Load MathJax for LaTeX rendering -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            startup: {
+                ready: () => {
+                    MathJax.startup.defaultReady();
+                    // Typeset the page when MathJax is ready
+                    MathJax.typesetPromise().catch((err) => console.log('MathJax error:', err));
+                }
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -28,6 +48,63 @@
             margin-left: 1.5rem;
             margin-bottom: 1rem;
         }
+        /* Custom slider styles */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #06b6d4;
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #06b6d4;
+            cursor: pointer;
+            border: none;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            background: #374151;
+            height: 8px;
+            border-radius: 4px;
+        }
+        input[type="range"]::-moz-range-track {
+            background: #374151;
+            height: 8px;
+            border-radius: 4px;
+        }
+        /* MathJax inline display fix - prevent extra line breaks */
+        mjx-container {
+            display: inline !important;
+            vertical-align: baseline !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 0 !important;
+        }
+        mjx-container[display="true"] {
+            display: block !important;
+            text-align: center !important;
+            margin: 1em 0 !important;
+            line-height: normal !important;
+        }
+        mjx-container svg {
+            display: inline !important;
+            vertical-align: baseline !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        /* Force inline in all contexts */
+        p mjx-container, li mjx-container, strong mjx-container {
+            display: inline !important;
+            line-height: inherit !important;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white font-inter">
@@ -44,10 +121,10 @@
                     <span id="toggle-icon" class="transform transition-transform duration-300 text-lg">▼</span>
                 </button>
                 <div id="vector-description-content" class="mt-2 text-gray-400 text-sm leading-relaxed hidden border-t border-gray-700 pt-2">
-                    <p>A **2D vector field** is a function that assigns a vector (a quantity with both magnitude and direction) to every point in a 2D space. It is mathematically represented as $f(x,y) = P(x,y)\mathbf{i} + Q(x,y)\mathbf{j}$.</p>
+                    <p>A <strong>2D vector field</strong> is a function that assigns a vector (a quantity with both magnitude and direction) to every point in a 2D space. It is mathematically represented as $f(x,y) = P(x,y)\mathbf{i} + Q(x,y)\mathbf{j}$.</p>
                     <ul class="list-disc list-inside mt-2 space-y-1">
-                        <li>$P(x,y)$ is the expression for the **horizontal movement ($x$-component)**.</li>
-                        <li>$Q(x,y)$ is the expression for the **vertical movement ($y$-component)**.</li>
+                        <li>$P(x,y)$ is the expression for the <strong>horizontal movement ($x$-component)</strong>.</li>
+                        <li>$Q(x,y)$ is the expression for the <strong>vertical movement ($y$-component)</strong>.</li>
                     </ul>
                     <p class="mt-2">In this visualizer, the particles move along the paths dictated by the vector at their current position. You can use the Gemini generator above to describe your own functions!</p>
                 </div>
@@ -77,19 +154,59 @@
             </div>
             <p id="api-status" class="text-center text-sm text-gray-400 mt-3 h-5"></p> <!-- Status message area -->
 
-            <!-- NEW: Preset Buttons -->
+            <!-- NEW: Preset Dropdown -->
             <div class="mt-4 pt-3 border-t border-gray-700">
-                <p class="text-sm font-medium text-cyan-400 mb-2">Or, try a preset field:</p>
-                <div class="grid grid-cols-3 gap-3">
-                    <button data-preset="vortex" class="preset-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-lg text-xs transition-all duration-200">
-                        🌀 Central Vortex
-                    </button>
-                    <button data-preset="wave" class="preset-button bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-3 rounded-lg text-xs transition-all duration-200">
-                        🌊 Complex Waves
-                    </button>
-                    <button data-preset="sink" class="preset-button bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-lg text-xs transition-all duration-200">
-                        ⚫ Central Sink
-                    </button>
+                <label for="preset-select" class="block text-sm font-medium text-cyan-400 mb-2">Or, try a preset field:</label>
+                <select id="preset-select" class="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                    <option value="">-- Select a preset --</option>
+                    <option value="vortex">🌀 Central Vortex</option>
+                    <option value="wave">🌊 Complex Waves</option>
+                    <option value="sink">⚫ Central Sink</option>
+                    <option value="spiral">🌪️ Expanding Spiral</option>
+                    <option value="turbulence">💨 Turbulence</option>
+                    <option value="radial">💫 Radial Expansion</option>
+                </select>
+            </div>
+
+            <!-- NEW: Customization Controls -->
+            <div class="mt-4 pt-3 border-t border-gray-700">
+                <p class="text-sm font-medium text-cyan-400 mb-3">Customization:</p>
+                
+                <!-- Color Controls -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                    <div>
+                        <label for="color-start" class="block text-xs text-gray-400 mb-1">Particle Color Start:</label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="color-start" value="#00ffff" class="w-12 h-8 rounded border border-gray-700 cursor-pointer">
+                            <span id="color-start-label" class="text-xs text-gray-300">#00ffff</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="color-end" class="block text-xs text-gray-400 mb-1">Particle Color End:</label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="color-end" value="#0080ff" class="w-12 h-8 rounded border border-gray-700 cursor-pointer">
+                            <span id="color-end-label" class="text-xs text-gray-300">#0080ff</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="bg-color" class="block text-xs text-gray-400 mb-1">Background Color:</label>
+                        <div class="flex items-center gap-2">
+                            <input type="color" id="bg-color" value="#111827" class="w-12 h-8 rounded border border-gray-700 cursor-pointer">
+                            <span id="bg-color-label" class="text-xs text-gray-300">#111827</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slider Controls -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label for="speed-slider" class="block text-xs text-gray-400 mb-1">Particle Speed: <span id="speed-value">1.0</span>x</label>
+                        <input type="range" id="speed-slider" min="0.1" max="3" step="0.1" value="1" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                    <div>
+                        <label for="size-slider" class="block text-xs text-gray-400 mb-1">Particle Size: <span id="size-value">1</span>px</label>
+                        <input type="range" id="size-slider" min="1" max="5" step="1" value="1" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
                 </div>
             </div>
         </div>
@@ -174,12 +291,16 @@
             // --- Canvas and Particle Config ---
             const canvas = document.getElementById('flowCanvas');
             const ctx = canvas.getContext('2d');
-            const NUM_PARTICLES = 1500;
-            const PARTICLE_SPEED = 1;
+            let NUM_PARTICLES = 1500;
+            let PARTICLE_SPEED = 1;
             const FIELD_SCALE = 8;
-            const FADE_OPACITY = 0.05;
-            const HUE_START = 180;
-            const HUE_END = 240;
+            let FADE_OPACITY = 0.05;
+            let HUE_START = 180;
+            let HUE_END = 240;
+            let PARTICLE_SIZE = 1;
+            let BG_COLOR_R = 17;
+            let BG_COLOR_G = 24;
+            let BG_COLOR_B = 39;
 
             // --- DOM Element Refs ---
             const generateButton = document.getElementById('generate-button');
@@ -202,7 +323,17 @@
             const copyCssButton = document.getElementById('copy-css-button');
             const copyJsButton = document.getElementById('copy-js-button');
             const copyCompleteButton = document.getElementById('copy-complete-button');
-            const presetButtons = document.querySelectorAll('.preset-button');
+            const presetSelect = document.getElementById('preset-select');
+            const colorStartInput = document.getElementById('color-start');
+            const colorEndInput = document.getElementById('color-end');
+            const bgColorInput = document.getElementById('bg-color');
+            const colorStartLabel = document.getElementById('color-start-label');
+            const colorEndLabel = document.getElementById('color-end-label');
+            const bgColorLabel = document.getElementById('bg-color-label');
+            const speedSlider = document.getElementById('speed-slider');
+            const sizeSlider = document.getElementById('size-slider');
+            const speedValue = document.getElementById('speed-value');
+            const sizeValue = document.getElementById('size-value');
 
             // NEW Refs for description
             const toggleDescriptionButton = document.getElementById('toggle-description');
@@ -240,6 +371,24 @@
                     vx: `-(x - (${FIELD_SCALE} / 2)) * 0.5`,
                     vy: `-(y - (${FIELD_SCALE} / 2)) * 0.5`,
                     desc: `f(x,y) = -0.5(x-4)î - 0.5(y-4)ĵ (Central Sink/Attractor)`
+                },
+                spiral: {
+                    // f(x,y) = (-y + 4) + 0.3(x - 4)î + (x - 4) + 0.3(y - 4)ĵ - creates an expanding spiral
+                    vx: `-(y - (${FIELD_SCALE} / 2)) + 0.3 * (x - (${FIELD_SCALE} / 2))`,
+                    vy: `(x - (${FIELD_SCALE} / 2)) + 0.3 * (y - (${FIELD_SCALE} / 2))`,
+                    desc: `f(x,y) = (-(y-4) + 0.3(x-4))î + ((x-4) + 0.3(y-4))ĵ (Expanding Spiral)`
+                },
+                turbulence: {
+                    // f(x,y) = sin(x + y)î + cos(x - y)ĵ - creates chaotic turbulent flow
+                    vx: `Math.sin(x + y) * 2`,
+                    vy: `Math.cos(x - y) * 2`,
+                    desc: `f(x,y) = 2sin(x+y)î + 2cos(x-y)ĵ (Turbulence)`
+                },
+                radial: {
+                    // f(x,y) = (x-4)î + (y-4)ĵ - creates outward radial flow from center
+                    vx: `(x - (${FIELD_SCALE} / 2)) * 0.5`,
+                    vy: `(y - (${FIELD_SCALE} / 2)) * 0.5`,
+                    desc: `f(x,y) = 0.5(x-4)î + 0.5(y-4)ĵ (Radial Expansion)`
                 }
             };
 
@@ -381,7 +530,8 @@ Example for "a simple swirl": {"vx": "-y + 4", "vy": "x - 4"}`;
                 const systemPrompt = `You are a helpful math tutor. Explain the mathematical properties of the following 2D vector field in simple, easy-to-understand terms.
 The field is defined as f(x,y) = (vx)î + (vy)ĵ.
 The user's (x, y) coordinates range from 0 to 8.
-Format your answer in simple HTML with <p> and <ul> tags. Do not use markdown.`;
+Format your answer in simple HTML with <p> and <ul> tags. Do not use markdown.
+Use LaTeX notation enclosed in dollar signs $ for mathematical expressions (e.g., $f(x,y)$, $\\mathbf{i}$, $\\mathbf{j}$).`;
 
                 const userQuery = `Explain the field:
 vx = ${currentVxString}
@@ -397,6 +547,10 @@ What kind of patterns (swirls, waves, flows) would this create and why?`;
                 try {
                     const explanationText = await fetchGeminiApi(payload);
                     explanationContent.innerHTML = explanationText;
+                    // Render LaTeX with MathJax
+                    if (window.MathJax && window.MathJax.typesetPromise) {
+                        MathJax.typesetPromise([explanationContent]).catch((err) => console.log('MathJax typeset error:', err));
+                    }
                 } catch (error) {
                     console.error("Explanation failed:", error);
                     explanationContent.innerHTML = `<p class="text-red-400">Sorry, I couldn't generate an explanation. ${error.message}</p>`;
@@ -410,6 +564,69 @@ What kind of patterns (swirls, waves, flows) would this create and why?`;
                     updateVectorFunction(preset.vx, preset.vy, preset.desc);
                     setup(); // Re-initialize particles
                     apiStatus.textContent = `Preset loaded: ${preset.desc}`;
+                }
+            }
+
+            // --- Color Helper Functions ---
+            /**
+             * Converts a hex color to RGB object
+             */
+            function hexToRgb(hex) {
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : null;
+            }
+
+            /**
+             * Converts RGB to HSL
+             */
+            function rgbToHsl(r, g, b) {
+                r /= 255;
+                g /= 255;
+                b /= 255;
+                const max = Math.max(r, g, b);
+                const min = Math.min(r, g, b);
+                let h, s, l = (max + min) / 2;
+
+                if (max === min) {
+                    h = s = 0;
+                } else {
+                    const d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+                        case g: h = ((b - r) / d + 2) / 6; break;
+                        case b: h = ((r - g) / d + 4) / 6; break;
+                    }
+                }
+                return { h: h * 360, s: s * 100, l: l * 100 };
+            }
+
+            /**
+             * Updates color values from hex inputs
+             */
+            function updateColors() {
+                const startRgb = hexToRgb(colorStartInput.value);
+                const endRgb = hexToRgb(colorEndInput.value);
+                const bgRgb = hexToRgb(bgColorInput.value);
+
+                if (startRgb) {
+                    const startHsl = rgbToHsl(startRgb.r, startRgb.g, startRgb.b);
+                    HUE_START = startHsl.h;
+                }
+
+                if (endRgb) {
+                    const endHsl = rgbToHsl(endRgb.r, endRgb.g, endRgb.b);
+                    HUE_END = endHsl.h;
+                }
+
+                if (bgRgb) {
+                    BG_COLOR_R = bgRgb.r;
+                    BG_COLOR_G = bgRgb.g;
+                    BG_COLOR_B = bgRgb.b;
                 }
             }
 
@@ -625,14 +842,39 @@ ${jsCode}
                 copyToClipboard(exportCompleteCode.textContent, copyCompleteButton, '✅ Complete HTML copied to clipboard!');
             });
             
-            // New event listener for preset buttons
-            presetButtons.forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const presetId = e.currentTarget.getAttribute('data-preset');
-                    if (presetId) {
-                        loadPreset(presetId);
-                    }
-                });
+            // Preset dropdown event listener
+            presetSelect.addEventListener('change', (e) => {
+                const presetId = e.target.value;
+                if (presetId) {
+                    loadPreset(presetId);
+                }
+            });
+
+            // Color input event listeners
+            colorStartInput.addEventListener('input', (e) => {
+                colorStartLabel.textContent = e.target.value;
+                updateColors();
+            });
+
+            colorEndInput.addEventListener('input', (e) => {
+                colorEndLabel.textContent = e.target.value;
+                updateColors();
+            });
+
+            bgColorInput.addEventListener('input', (e) => {
+                bgColorLabel.textContent = e.target.value;
+                updateColors();
+            });
+
+            // Slider event listeners
+            speedSlider.addEventListener('input', (e) => {
+                PARTICLE_SPEED = parseFloat(e.target.value);
+                speedValue.textContent = PARTICLE_SPEED.toFixed(1);
+            });
+
+            sizeSlider.addEventListener('input', (e) => {
+                PARTICLE_SIZE = parseInt(e.target.value);
+                sizeValue.textContent = PARTICLE_SIZE;
             });
 
             // NEW: Listener for the collapsible description
@@ -640,6 +882,10 @@ ${jsCode}
                 const isHidden = descriptionContent.classList.toggle('hidden');
                 // Toggle the icon: Down arrow (▼) when collapsed, Up arrow (▲) when open
                 toggleIcon.textContent = isHidden ? '▼' : '▲';
+                // Render LaTeX when showing the description
+                if (!isHidden && window.MathJax && window.MathJax.typesetPromise) {
+                    MathJax.typesetPromise([descriptionContent]).catch((err) => console.log('MathJax typeset error:', err));
+                }
             });
 
             // --- Canvas Logic (Original) ---
@@ -695,7 +941,7 @@ ${jsCode}
                 draw() {
                     const hue = map(this.x, 0, canvasWidth, HUE_START, HUE_END);
                     ctx.fillStyle = `hsl(${hue}, 80%, 60%)`;
-                    ctx.fillRect(this.x, this.y, 1, 1);
+                    ctx.fillRect(this.x, this.y, PARTICLE_SIZE, PARTICLE_SIZE);
                 }
             }
 
@@ -704,7 +950,7 @@ ${jsCode}
             }
 
             function animate() {
-                ctx.fillStyle = `rgba(17, 24, 39, ${FADE_OPACITY})`;
+                ctx.fillStyle = `rgba(${BG_COLOR_R}, ${BG_COLOR_G}, ${BG_COLOR_B}, ${FADE_OPACITY})`;
                 ctx.fillRect(0, 0, canvasWidth, canvasHeight);
                 for (const particle of particles) {
                     particle.update();
@@ -726,7 +972,7 @@ ${jsCode}
                 for (let i = 0; i < NUM_PARTICLES; i++) {
                     particles.push(new Particle());
                 }
-                ctx.fillStyle = '#111827';
+                ctx.fillStyle = `rgb(${BG_COLOR_R}, ${BG_COLOR_G}, ${BG_COLOR_B})`;
                 ctx.fillRect(0, 0, canvasWidth, canvasHeight);
             }
 

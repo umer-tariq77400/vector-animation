@@ -7,10 +7,13 @@ Animate your 2D vector-valued functions into cool 2D particle flow visualization
 ### 🎨 Interactive Vector Field Generation
 - **AI-Powered Generation**: Describe your desired animation in natural language and let Gemini AI generate the mathematical vector field
 - **Real-time Visualization**: Watch 1500+ particles flow along your custom vector fields
-- **Preset Animations**: Quick-start with pre-configured patterns:
+- **Preset Animations**: Quick-start with 6 pre-configured patterns via dropdown menu:
   - 🌀 Central Vortex - Swirling rotational flow
   - 🌊 Complex Waves - Undulating wave patterns
   - ⚫ Central Sink - Converging attractor flow
+  - 🌪️ Expanding Spiral - Outward spiral motion
+  - 💨 Turbulence - Chaotic turbulent flow
+  - 💫 Radial Expansion - Outward radial flow
 
 ### 🤖 AI Integration
 - **Gemini AI-Powered**: Uses Google's Gemini 2.5 Flash model for intelligent field generation
@@ -32,10 +35,19 @@ Animate your 2D vector-valued functions into cool 2D particle flow visualization
 - **Real-time Equation Display**: Shows the current vector field equation being visualized
 
 ### 🎨 Customization
-- Beautiful particle system with gradient colors (cyan to blue)
-- Smooth particle trails with configurable fade
-- Responsive canvas that adapts to any screen size
-- Dark theme UI with modern design
+- **Color Customization**: 
+  - Choose custom colors for particle gradient (start and end colors)
+  - Customize background color with visual color pickers
+  - See color codes displayed next to pickers
+- **Particle Controls**:
+  - Adjust particle speed with slider (0.1x to 3.0x)
+  - Modify particle size with slider (1px to 5px)
+  - Real-time updates as you adjust controls
+- **Visual Enhancements**:
+  - Beautiful particle system with customizable gradient colors
+  - Smooth particle trails with configurable fade
+  - Responsive canvas that adapts to any screen size
+  - Dark theme UI with modern design
 
 ## 🚀 Getting Started
 
