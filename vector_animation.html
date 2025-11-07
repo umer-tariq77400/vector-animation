@@ -681,7 +681,7 @@ let canvasHeight = 0;
 
 // Vector field function - this defines the animation behavior
 const vectorFunction = new Function('x', 'y', 
-    'with(Math) { return { x: (${currentVxString}), y: (${currentVyString}) }; }'
+    \`with(Math) { return { x: (${currentVxString}), y: (${currentVyString}) }; }\`
 );
 
 function getVectorAt(x, y) {
