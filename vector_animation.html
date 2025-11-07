@@ -664,12 +664,16 @@ const canvas = document.getElementById('vectorCanvas');
 const ctx = canvas.getContext('2d');
 
 // Configuration
-const NUM_PARTICLES = 1500;
-const PARTICLE_SPEED = 1;
+const NUM_PARTICLES = ${NUM_PARTICLES};
+const PARTICLE_SPEED = ${PARTICLE_SPEED};
+const PARTICLE_SIZE = ${PARTICLE_SIZE};
 const FIELD_SCALE = 8;
 const FADE_OPACITY = 0.05;
-const HUE_START = 180;
-const HUE_END = 240;
+const HUE_START = ${Math.round(HUE_START)};
+const HUE_END = ${Math.round(HUE_END)};
+const BG_COLOR_R = ${BG_COLOR_R};
+const BG_COLOR_G = ${BG_COLOR_G};
+const BG_COLOR_B = ${BG_COLOR_B};
 
 let particles = [];
 let canvasWidth = 0;
@@ -722,7 +726,7 @@ class Particle {
     draw() {
         const hue = map(this.x, 0, canvasWidth, HUE_START, HUE_END);
         ctx.fillStyle = 'hsl(' + hue + ', 80%, 60%)';
-        ctx.fillRect(this.x, this.y, 1, 1);
+        ctx.fillRect(this.x, this.y, PARTICLE_SIZE, PARTICLE_SIZE);
     }
 }
 
@@ -731,7 +735,7 @@ function map(value, inMin, inMax, outMin, outMax) {
 }
 
 function animate() {
-    ctx.fillStyle = 'rgba(17, 24, 39, ' + FADE_OPACITY + ')';
+    ctx.fillStyle = 'rgba(' + BG_COLOR_R + ', ' + BG_COLOR_G + ', ' + BG_COLOR_B + ', ' + FADE_OPACITY + ')';
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     
     for (const particle of particles) {
@@ -759,7 +763,7 @@ function setup() {
         particles.push(new Particle());
     }
     
-    ctx.fillStyle = '#111827';
+    ctx.fillStyle = 'rgb(' + BG_COLOR_R + ', ' + BG_COLOR_G + ', ' + BG_COLOR_B + ')';
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 }
 
