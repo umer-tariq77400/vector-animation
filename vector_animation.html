@@ -138,7 +138,15 @@
 
         <!-- NEW: Gemini Interaction Panel -->
         <div class="w-full max-w-5xl mb-4 p-4 bg-gray-800/50 border border-gray-700 rounded-lg shadow-lg">
-            <label for="prompt-input" class="block text-sm font-medium text-cyan-400 mb-2">Describe a vector field you want to see:</label>
+            <div class="flex items-start gap-2 mb-2">
+                <label for="prompt-input" class="text-sm font-medium text-cyan-400 whitespace-nowrap pt-1">Describe a vector field you want to see:</label>
+                <button id="toggle-api-key" class="text-xs text-gray-400 hover:text-cyan-400 transition duration-200 whitespace-nowrap">
+                    [API Key ▼]
+                </button>
+            </div>
+            <div id="api-key-container" class="hidden mb-2">
+                <input type="text" id="api-key-input" class="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm" placeholder="Enter your Gemini API key (optional - overrides default key)">
+            </div>
             <textarea id="prompt-input" rows="2" class="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="e.g., 'a swirling vortex in the middle', 'a flow moving right', 'complex waves'"></textarea>
             
             <div class="flex flex-col sm:flex-row gap-3 mt-3">
@@ -176,36 +184,31 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
                     <div>
                         <label for="color-start" class="block text-xs text-gray-400 mb-1">Particle Color Start:</label>
-                        <div class="flex items-center gap-2">
-                            <input type="color" id="color-start" value="#00ffff" class="w-12 h-8 rounded border border-gray-700 cursor-pointer">
-                            <span id="color-start-label" class="text-xs text-gray-300">#00ffff</span>
-                        </div>
+                        <input type="color" id="color-start" value="#00ffff" class="w-full h-8 rounded border border-gray-700 cursor-pointer">
                     </div>
                     <div>
                         <label for="color-end" class="block text-xs text-gray-400 mb-1">Particle Color End:</label>
-                        <div class="flex items-center gap-2">
-                            <input type="color" id="color-end" value="#0080ff" class="w-12 h-8 rounded border border-gray-700 cursor-pointer">
-                            <span id="color-end-label" class="text-xs text-gray-300">#0080ff</span>
-                        </div>
+                        <input type="color" id="color-end" value="#0080ff" class="w-full h-8 rounded border border-gray-700 cursor-pointer">
                     </div>
                     <div>
                         <label for="bg-color" class="block text-xs text-gray-400 mb-1">Background Color:</label>
-                        <div class="flex items-center gap-2">
-                            <input type="color" id="bg-color" value="#111827" class="w-12 h-8 rounded border border-gray-700 cursor-pointer">
-                            <span id="bg-color-label" class="text-xs text-gray-300">#111827</span>
-                        </div>
+                        <input type="color" id="bg-color" value="#111827" class="w-full h-8 rounded border border-gray-700 cursor-pointer">
                     </div>
                 </div>
 
                 <!-- Slider Controls -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div>
-                        <label for="speed-slider" class="block text-xs text-gray-400 mb-1">Particle Speed: <span id="speed-value">1.0</span>x</label>
-                        <input type="range" id="speed-slider" min="0.1" max="3" step="0.1" value="1" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                        <label for="count-slider" class="block text-xs text-gray-400 mb-1">Particle Count: <span id="count-value">1500</span></label>
+                        <input type="range" id="count-slider" min="100" max="3000" step="100" value="1500" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
                     </div>
                     <div>
                         <label for="size-slider" class="block text-xs text-gray-400 mb-1">Particle Size: <span id="size-value">1</span>px</label>
                         <input type="range" id="size-slider" min="1" max="5" step="1" value="1" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                    <div>
+                        <label for="speed-slider" class="block text-xs text-gray-400 mb-1">Particle Speed: <span id="speed-value">1.0</span>x</label>
+                        <input type="range" id="speed-slider" min="0.1" max="3" step="0.1" value="1" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
                     </div>
                 </div>
             </div>
@@ -327,13 +330,15 @@
             const colorStartInput = document.getElementById('color-start');
             const colorEndInput = document.getElementById('color-end');
             const bgColorInput = document.getElementById('bg-color');
-            const colorStartLabel = document.getElementById('color-start-label');
-            const colorEndLabel = document.getElementById('color-end-label');
-            const bgColorLabel = document.getElementById('bg-color-label');
             const speedSlider = document.getElementById('speed-slider');
             const sizeSlider = document.getElementById('size-slider');
+            const countSlider = document.getElementById('count-slider');
             const speedValue = document.getElementById('speed-value');
             const sizeValue = document.getElementById('size-value');
+            const countValue = document.getElementById('count-value');
+            const toggleApiKeyButton = document.getElementById('toggle-api-key');
+            const apiKeyContainer = document.getElementById('api-key-container');
+            const apiKeyInput = document.getElementById('api-key-input');
 
             // NEW Refs for description
             const toggleDescriptionButton = document.getElementById('toggle-description');
@@ -346,7 +351,7 @@
             let canvasHeight = 0;
             
             // --- Gemini API State ---
-            const apiKey = "AIzaSyCSUUMTIw2UQ6atm5goZARO5q44Sj31wt8";
+            const defaultApiKey = "AIzaSyCSUUMTIw2UQ6atm5goZARO5q44Sj31wt8";
             let vectorFunction;
             let currentVxString = "Math.sin(x) + Math.sin(y)";
             let currentVyString = "Math.sin(x) - Math.sin(y)";
@@ -423,6 +428,7 @@
              * Fetches from the Gemini API with exponential backoff.
              */
             async function fetchGeminiApi(payload, retries = 3, delay = 1000) {
+                const apiKey = apiKeyInput.value.trim() || defaultApiKey;
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
                 for (let i = 0; i < retries; i++) {
@@ -852,17 +858,14 @@ ${jsCode}
 
             // Color input event listeners
             colorStartInput.addEventListener('input', (e) => {
-                colorStartLabel.textContent = e.target.value;
                 updateColors();
             });
 
             colorEndInput.addEventListener('input', (e) => {
-                colorEndLabel.textContent = e.target.value;
                 updateColors();
             });
 
             bgColorInput.addEventListener('input', (e) => {
-                bgColorLabel.textContent = e.target.value;
                 updateColors();
             });
 
@@ -875,6 +878,18 @@ ${jsCode}
             sizeSlider.addEventListener('input', (e) => {
                 PARTICLE_SIZE = parseInt(e.target.value);
                 sizeValue.textContent = PARTICLE_SIZE;
+            });
+
+            countSlider.addEventListener('input', (e) => {
+                NUM_PARTICLES = parseInt(e.target.value);
+                countValue.textContent = NUM_PARTICLES;
+                setup(); // Reinitialize particles with new count
+            });
+
+            // Toggle API key input
+            toggleApiKeyButton.addEventListener('click', () => {
+                const isHidden = apiKeyContainer.classList.toggle('hidden');
+                toggleApiKeyButton.textContent = isHidden ? '[API Key ▼]' : '[API Key ▲]';
             });
 
             // NEW: Listener for the collapsible description
