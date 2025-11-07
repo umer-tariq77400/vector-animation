@@ -81,15 +81,29 @@
             border-radius: 4px;
         }
         /* MathJax inline display fix - prevent extra line breaks */
-        mjx-container[jax="SVG"] {
+        mjx-container {
             display: inline !important;
+            vertical-align: baseline !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 0 !important;
+        }
+        mjx-container[display="true"] {
+            display: block !important;
+            text-align: center !important;
+            margin: 1em 0 !important;
+            line-height: normal !important;
+        }
+        mjx-container svg {
+            display: inline !important;
+            vertical-align: baseline !important;
             margin: 0 !important;
             padding: 0 !important;
         }
-        mjx-container[jax="SVG"][display="true"] {
-            display: block !important;
-            text-align: center;
-            margin: 1em 0 !important;
+        /* Force inline in all contexts */
+        p mjx-container, li mjx-container, strong mjx-container {
+            display: inline !important;
+            line-height: inherit !important;
         }
     </style>
 </head>
