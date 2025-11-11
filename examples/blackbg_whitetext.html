@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vector Field Animation - f(x,y) = (sin(x)+sin(y))î + (sin(x)-sin(y))ĵ</title>
+    <style>
+      /* Vector Animation - Page Background */
+      #vectorCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        display: block;
+      }
+
+      /* Optional: Ensure body doesn't have overflow issues */
+      body {
+        margin: 0;
+        padding: 0;
+        color: white;
+      }
+
+      .content {
+        position: relative;
+        z-index: 10;
+        padding: 40px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+
+      .header {
+        font-size: 3em;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+      }
+
+      .description {
+        font-size: 1.2em;
+        margin-bottom: 40px;
+        max-width: 600px;
+        line-height: 1.6;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        max-width: 800px;
+        margin-top: 40px;
+      }
+
+      .feature-card {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 8px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      }
+
+      .feature-card h3 {
+        margin-top: 0;
+        color: #60a5fa;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Place this canvas element anywhere in your page body and add a "vectorCanvas" class -->
+    <canvas id="vectorCanvas"></canvas>
+
+    <div class="content">
+      <div class="header">Vector Field Animation</div>
+
+      <div class="description">Experience a beautiful mathematical visualization showing the behavior of a vector field with the function f(x,y) = (sin(x)+sin(y))î + (sin(x)-sin(y))ĵ</div>
+
+      <div class="features">
+        <div class="feature-card">
+          <h3>🎨 Dynamic Colors</h3>
+          <p>Particles shift through cyan to blue based on their position across the screen</p>
+        </div>
+        <div class="feature-card">
+          <h3>📊 Mathematical Beauty</h3>
+          <p>Visualizing complex sine wave patterns in 2D space</p>
+        </div>
+        <div class="feature-card">
+          <h3>✨ Smooth Animation</h3>
+          <p>1500 particles flowing through the vector field smoothly</p>
+        </div>
+        <div class="feature-card">
+          <h3>🌐 Full Screen</h3>
+          <p>Background animation adapts to your screen size automatically</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Vector Animation Script
+      // Current field: f(x,y) = (sin(x)+sin(y))î + (sin(x)-sin(y))ĵ
+
+      // Configuration
+      const NUM_PARTICLES = 1500;
+      const PARTICLE_SPEED = 1;
+      const PARTICLE_SIZE = 1;
+      const FIELD_SCALE = 8;
+      const FADE_OPACITY = 0.05;
+      const HUE_START = 180;
+      const HUE_END = 240;
+      const BG_COLOR_R = 17;
+      const BG_COLOR_G = 24;
+      const BG_COLOR_B = 39;
+
+      let particles = [];
+      let canvasWidth = 0;
+      let canvasHeight = 0;
+
+      // Vector field function - this defines the animation behavior
+      const vectorFunction = new Function("x", "y", `with(Math) { return { x: (Math.sin(x) + Math.sin(y)), y: (Math.sin(x) - Math.sin(y)) }; }`);
+
+      function getVectorAt(x, y) {
+        try {
+          return vectorFunction(x, y);
+        } catch (e) {
+          return { x: 0, y: 0 };
+        }
+      }
+
+      class Particle {
+        constructor() {
+          this.reset();
+        }
+
+        reset() {
+          this.x = Math.random() * canvasWidth;
+          this.y = Math.random() * canvasHeight;
+          this.vx = 0;
+          this.vy = 0;
+        }
+
+        update() {
+          const mathX = map(this.x, 0, canvasWidth, 0, FIELD_SCALE);
+          const mathY = map(this.y, 0, canvasHeight, 0, FIELD_SCALE);
+          const vector = getVectorAt(mathX, mathY);
+
+          this.x += vector.x * PARTICLE_SPEED;
+          this.y += vector.y * PARTICLE_SPEED;
+          this.vx = vector.x;
+          this.vy = vector.y;
+
+          const magnitudeSq = this.vx * this.vx + this.vy * this.vy;
+          const randomRespawnChance = 0.001;
+
+          if (this.x < 0 || this.x > canvasWidth || this.y < 0 || this.y > canvasHeight || magnitudeSq < 0.0001 || Math.random() < randomRespawnChance) {
+            this.reset();
+          }
+        }
+
+        draw() {
+          const hue = map(this.x, 0, canvasWidth, HUE_START, HUE_END);
+          ctx.fillStyle = "hsl(" + hue + ", 80%, 60%)";
+          ctx.fillRect(this.x, this.y, PARTICLE_SIZE, PARTICLE_SIZE);
+        }
+      }
+
+      function map(value, inMin, inMax, outMin, outMax) {
+        return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+      }
+
+      function animate() {
+        ctx.fillStyle = "rgba(" + BG_COLOR_R + ", " + BG_COLOR_G + ", " + BG_COLOR_B + ", " + FADE_OPACITY + ")";
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        for (const particle of particles) {
+          particle.update();
+          particle.draw();
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      const canvas = document.getElementById("vectorCanvas");
+      const ctx = canvas.getContext("2d");
+
+      function setup() {
+        const dpr = window.devicePixelRatio || 1;
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+
+        canvasWidth = width;
+        canvasHeight = height;
+
+        particles = [];
+        for (let i = 0; i < NUM_PARTICLES; i++) {
+          particles.push(new Particle());
+        }
+
+        ctx.fillStyle = "rgb(" + BG_COLOR_R + ", " + BG_COLOR_G + ", " + BG_COLOR_B + ")";
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+      }
+
+      // Initialize
+      setup();
+      window.addEventListener("resize", setup);
+      animate();
+    </script>
+  </body>
+</html>

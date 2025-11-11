@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vector Field Animation - f(x,y) = 0.5(x-4)î + 0.5(y-4)ĵ</title>
+    <style>
+      /* Vector Animation - Page Background */
+      #vectorCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        display: block;
+      }
+
+      /* Optional: Ensure body doesn't have overflow issues */
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      .content {
+        position: relative;
+        z-index: 10;
+        padding: 40px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+
+      .header {
+        font-size: 3em;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+
+      .description {
+        font-size: 1.2em;
+        margin-bottom: 40px;
+        max-width: 600px;
+        line-height: 1.6;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        max-width: 800px;
+        margin-top: 40px;
+      }
+
+      .feature-card {
+        background: rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border-radius: 8px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 0, 0, 0.2);
+      }
+
+      .feature-card h3 {
+        margin-top: 0;
+        color: #ff6b6b;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Place this canvas element anywhere in your page body and add a "vectorCanvas" class -->
+    <canvas id="vectorCanvas"></canvas>
+
+    <div class="content">
+      <div class="header">Vector Field Animation</div>
+
+      <div class="description">Experience a beautiful mathematical visualization showing the behavior of a vector field with the function f(x,y) = 0.5(x-4)î + 0.5(y-4)ĵ</div>
+
+      <div class="features">
+        <div class="feature-card">
+          <h3>🎨 Dynamic Colors</h3>
+          <p>Particles shift through red to magenta based on their position across the screen</p>
+        </div>
+        <div class="feature-card">
+          <h3>📊 Mathematical Beauty</h3>
+          <p>Visualizing radial expansion patterns from the center</p>
+        </div>
+        <div class="feature-card">
+          <h3>✨ Smooth Animation</h3>
+          <p>700 particles flowing through the vector field smoothly</p>
+        </div>
+        <div class="feature-card">
+          <h3>🌐 Full Screen</h3>
+          <p>Background animation adapts to your screen size automatically</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Vector Animation Script
+      // Current field: f(x,y) = 0.5(x-4)î + 0.5(y-4)ĵ (Radial Expansion)
+
+      // Configuration
+      const NUM_PARTICLES = 700;
+      const PARTICLE_SPEED = 1;
+      const PARTICLE_SIZE = 2;
+      const FIELD_SCALE = 8;
+      const FADE_OPACITY = 0.05;
+      const HUE_START = 0;
+      const HUE_END = 336;
+      const BG_COLOR_R = 255;
+      const BG_COLOR_G = 255;
+      const BG_COLOR_B = 255;
+
+      let particles = [];
+      let canvasWidth = 0;
+      let canvasHeight = 0;
+
+      // Vector field function - this defines the animation behavior
+      const vectorFunction = new Function("x", "y", `with(Math) { return { x: ((x - (8 / 2)) * 0.5), y: ((y - (8 / 2)) * 0.5) }; }`);
+
+      function getVectorAt(x, y) {
+        try {
+          return vectorFunction(x, y);
+        } catch (e) {
+          return { x: 0, y: 0 };
+        }
+      }
+
+      class Particle {
+        constructor() {
+          this.reset();
+        }
+
+        reset() {
+          this.x = Math.random() * canvasWidth;
+          this.y = Math.random() * canvasHeight;
+          this.vx = 0;
+          this.vy = 0;
+        }
+
+        update() {
+          const mathX = map(this.x, 0, canvasWidth, 0, FIELD_SCALE);
+          const mathY = map(this.y, 0, canvasHeight, 0, FIELD_SCALE);
+          const vector = getVectorAt(mathX, mathY);
+
+          this.x += vector.x * PARTICLE_SPEED;
+          this.y += vector.y * PARTICLE_SPEED;
+          this.vx = vector.x;
+          this.vy = vector.y;
+
+          const magnitudeSq = this.vx * this.vx + this.vy * this.vy;
+          const randomRespawnChance = 0.001;
+
+          if (this.x < 0 || this.x > canvasWidth || this.y < 0 || this.y > canvasHeight || magnitudeSq < 0.0001 || Math.random() < randomRespawnChance) {
+            this.reset();
+          }
+        }
+
+        draw() {
+          const hue = map(this.x, 0, canvasWidth, HUE_START, HUE_END);
+          ctx.fillStyle = "hsl(" + hue + ", 80%, 60%)";
+          ctx.fillRect(this.x, this.y, PARTICLE_SIZE, PARTICLE_SIZE);
+        }
+      }
+
+      function map(value, inMin, inMax, outMin, outMax) {
+        return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+      }
+
+      function animate() {
+        ctx.fillStyle = "rgba(" + BG_COLOR_R + ", " + BG_COLOR_G + ", " + BG_COLOR_B + ", " + FADE_OPACITY + ")";
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+        for (const particle of particles) {
+          particle.update();
+          particle.draw();
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      const canvas = document.getElementById("vectorCanvas");
+      const ctx = canvas.getContext("2d");
+
+      function setup() {
+        const dpr = window.devicePixelRatio || 1;
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.scale(dpr, dpr);
+
+        canvasWidth = width;
+        canvasHeight = height;
+
+        particles = [];
+        for (let i = 0; i < NUM_PARTICLES; i++) {
+          particles.push(new Particle());
+        }
+
+        ctx.fillStyle = "rgb(" + BG_COLOR_R + ", " + BG_COLOR_G + ", " + BG_COLOR_B + ")";
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+      }
+
+      // Initialize
+      setup();
+      window.addEventListener("resize", setup);
+      animate();
+    </script>
+  </body>
+</html>

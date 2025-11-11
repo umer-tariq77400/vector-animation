@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vector Animation Components Showcase</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: #333;
+      }
+
+      /* Vector Animation - Component Background */
+      .vector-bg-container {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .vector-bg-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .vector-bg-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Hero Section */
+      .hero {
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: white;
+        padding: 60px 20px;
+      }
+
+      .hero-content h1 {
+        font-size: 4em;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .hero-content p {
+        font-size: 1.5em;
+        margin-bottom: 30px;
+        max-width: 700px;
+        text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+      }
+
+      .cta-button {
+        display: inline-block;
+        padding: 15px 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-size: 1.1em;
+        font-weight: bold;
+        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+      }
+
+      /* Feature Cards Section */
+      .features-section {
+        padding: 80px 20px;
+        background: #f8f9fa;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 2.5em;
+        margin-bottom: 60px;
+        color: #333;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      /* Feature Card with Animation Background */
+      .feature-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .feature-card-animation {
+        height: 200px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-card-content {
+        padding: 30px;
+      }
+
+      .feature-card-content h3 {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+        color: #667eea;
+      }
+
+      .feature-card-content p {
+        color: #666;
+        line-height: 1.6;
+      }
+
+      /* Stats Strip */
+      .stats-strip {
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        padding: 40px 20px;
+      }
+
+      .stats-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 40px;
+        max-width: 1000px;
+        text-align: center;
+      }
+
+      .stat-item h2 {
+        font-size: 3em;
+        margin-bottom: 10px;
+      }
+
+      .stat-item p {
+        font-size: 1.2em;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Testimonials Section */
+      .testimonials-section {
+        padding: 80px 20px;
+        background: white;
+      }
+
+      .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .testimonial-card {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+      }
+
+      .testimonial-text {
+        font-style: italic;
+        margin-bottom: 20px;
+        color: #555;
+        line-height: 1.6;
+      }
+
+      .testimonial-author {
+        font-weight: bold;
+        color: #333;
+      }
+
+      /* Newsletter Section */
+      .newsletter {
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        color: white;
+      }
+
+      .newsletter-content {
+        max-width: 600px;
+        text-align: center;
+      }
+
+      .newsletter-content h2 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      .newsletter-content p {
+        font-size: 1.1em;
+        margin-bottom: 30px;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .newsletter-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .newsletter-form input {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1em;
+        min-width: 250px;
+      }
+
+      .newsletter-form button {
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .newsletter-form button:hover {
+        transform: translateY(-2px);
+      }
+
+      /* Footer */
+      .footer {
+        background: #1a1a1a;
+        color: white;
+        padding: 60px 20px 20px;
+      }
+
+      .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+        max-width: 1200px;
+        margin: 0 auto 40px;
+      }
+
+      .footer-section h3 {
+        margin-bottom: 20px;
+        font-size: 1.2em;
+      }
+
+      .footer-section ul {
+        list-style: none;
+      }
+
+      .footer-section ul li {
+        margin-bottom: 10px;
+      }
+
+      .footer-section a {
+        color: #aaa;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer-section a:hover {
+        color: #667eea;
+      }
+
+      .footer-bottom {
+        border-top: 1px solid #333;
+        padding-top: 20px;
+        text-align: center;
+        color: #888;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .hero-content h1 {
+          font-size: 2.5em;
+        }
+
+        .hero-content p {
+          font-size: 1.2em;
+        }
+
+        .section-title {
+          font-size: 2em;
+        }
+
+        .stat-item h2 {
+          font-size: 2em;
+        }
+
+        .newsletter-content h2 {
+          font-size: 2em;
+        }
+
+        .newsletter-form input {
+          min-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Hero Section with Animation -->
+    <div class="vector-bg-container" style="min-height: 600px">
+      <canvas class="vector-bg-canvas"></canvas>
+      <div class="vector-bg-content hero">
+        <div class="hero-content">
+          <h1>Vector Animation Components</h1>
+          <p>Beautiful, responsive animations for modern web components</p>
+          <a href="#" class="cta-button">Get Started</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <section class="features-section">
+      <h2 class="section-title">Component Examples</h2>
+      <div class="features-grid">
+        <!-- Feature Card 1 with Animation -->
+        <div class="feature-card">
+          <div class="feature-card-animation">
+            <div class="vector-bg-container" style="height: 200px">
+              <canvas class="vector-bg-canvas"></canvas>
+            </div>
+          </div>
+          <div class="feature-card-content">
+            <h3>🎨 Dynamic Colors</h3>
+            <p>Customize animation colors and speeds to match your brand and design system perfectly.</p>
+          </div>
+        </div>
+
+        <!-- Feature Card 2 with Animation -->
+        <div class="feature-card">
+          <div class="feature-card-animation">
+            <div class="vector-bg-container" style="height: 200px">
+              <canvas class="vector-bg-canvas"></canvas>
+            </div>
+          </div>
+          <div class="feature-card-content">
+            <h3>📊 Mathematical Beauty</h3>
+            <p>Powered by complex mathematical functions that create mesmerizing visual patterns.</p>
+          </div>
+        </div>
+
+        <!-- Feature Card 3 with Animation -->
+        <div class="feature-card">
+          <div class="feature-card-animation">
+            <div class="vector-bg-container" style="height: 200px">
+              <canvas class="vector-bg-canvas"></canvas>
+            </div>
+          </div>
+          <div class="feature-card-content">
+            <h3>✨ Smooth Performance</h3>
+            <p>Optimized for performance with smooth 60fps animations on all modern devices.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats Strip with Animation -->
+    <div class="vector-bg-container" style="min-height: 250px">
+      <canvas class="vector-bg-canvas"></canvas>
+      <div class="vector-bg-content stats-strip">
+        <div class="stats-content">
+          <div class="stat-item">
+            <h2>1500+</h2>
+            <p>Animated Particles</p>
+          </div>
+          <div class="stat-item">
+            <h2>60fps</h2>
+            <p>Smooth Performance</p>
+          </div>
+          <div class="stat-item">
+            <h2>∞</h2>
+            <p>Customizable Fields</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+      <h2 class="section-title">What Developers Say</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <p class="testimonial-text">"This animation library transformed our website. The effect is stunning and the integration was seamless!"</p>
+          <p class="testimonial-author">- Sarah Chen, Frontend Developer</p>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-text">"Amazing visual appeal with minimal performance impact. Highly recommended for any modern web project."</p>
+          <p class="testimonial-author">- Marcus Johnson, UI Designer</p>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-text">"The documentation is clear and the customization options are endless. It's a game-changer!"</p>
+          <p class="testimonial-author">- Elena Rodriguez, Creative Director</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter Section with Animation -->
+    <div class="vector-bg-container" style="min-height: 300px">
+      <canvas class="vector-bg-canvas"></canvas>
+      <div class="vector-bg-content newsletter">
+        <div class="newsletter-content">
+          <h2>Stay Updated</h2>
+          <p>Subscribe to our newsletter for new animation patterns and updates</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Thank you for subscribing!');">
+            <input type="email" placeholder="Enter your email" required />
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>About</h3>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Resources</h3>
+          <ul>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">Examples</a></li>
+            <li><a href="#">API Reference</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Connect</h3>
+          <ul>
+            <li><a href="#">Twitter</a></li>
+            <li><a href="#">GitHub</a></li>
+            <li><a href="#">Discord</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Legal</h3>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">License</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Vector Animation Components. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script>
+      // Vector Animation Script with Multiple Configuration Presets
+
+      // Define separate animation configurations for each canvas
+      const animationConfigs = [
+        {
+          // Canvas 1: Hero Section - Expanding Spiral
+          name: "heroComplexWaves",
+          particles: 2000,
+          speed: 0.5,
+          size: 3,
+          scale: 8,
+          fadeOpacity: 0.05,
+          hueStart: 190,
+          hueEnd: 127,
+          bgR: 34,
+          bgG: 40,
+          bgB: 93,
+          vectorFn: (x, y) => ({ x: -(y - 4) + 0.3 * (x - 4), y: x - 4 + 0.3 * (y - 4) }),
+        },
+        {
+          // Canvas 2: Feature Card 1 - Dynamic Colors (Central Vortex)
+          name: "featureCard1",
+          particles: 700,
+          speed: 0.5,
+          size: 1,
+          scale: 8,
+          fadeOpacity: 0.05,
+          hueStart: 217,
+          hueEnd: 152,
+          bgR: 78,
+          bgG: 50,
+          bgB: 50,
+          vectorFn: (x, y) => ({ x: -(y - 4), y: x - 4 }),
+        },
+        {
+          // Canvas 3: Feature Card 2 - Mathematical Beauty (Central Sink/Attractor)
+          name: "featureCard2",
+          particles: 1500,
+          speed: 1,
+          size: 2,
+          scale: 8,
+          fadeOpacity: 0.05,
+          hueStart: 0,
+          hueEnd: 0,
+          bgR: 45,
+          bgG: 41,
+          bgB: 96,
+          vectorFn: (x, y) => ({ x: -0.5 * (x - 4), y: -0.5 * (y - 4) }),
+        },
+        {
+          // Canvas 4: Feature Card 3 - Smooth Performance
+          name: "featureCard3",
+          particles: 900,
+          speed: 1.2,
+          size: 2,
+          scale: 8,
+          fadeOpacity: 0.05,
+          hueStart: 120,
+          hueEnd: 200,
+          bgR: 30,
+          bgG: 70,
+          bgB: 50,
+          vectorFn: (x, y) => ({ x: Math.cos(x) * 2, y: Math.sin(y) * 2 }),
+        },
+        {
+          // Canvas 5: Stats Strip - Waves Moving Right
+          name: "statsComplex",
+          particles: 2000,
+          speed: 0.5,
+          size: 3,
+          scale: 8,
+          fadeOpacity: 0.05,
+          hueStart: 20,
+          hueEnd: 60,
+          bgR: 80,
+          bgG: 40,
+          bgB: 30,
+          vectorFn: (x, y) => ({ x: 1, y: Math.sin(x * 4) * 5 }),
+        },
+        {
+          // Canvas 6: Newsletter Section - Rectangular Pattern
+          name: "newsletterCircular",
+          particles: 2000,
+          speed: 0.7,
+          size: 2,
+          scale: 8,
+          fadeOpacity: 0.05,
+          hueStart: 280,
+          hueEnd: 340,
+          bgR: 50,
+          bgG: 35,
+          bgB: 80,
+          vectorFn: (x, y) => ({ x: Math.sin(y * 2) * 2, y: Math.cos(x * 2) * 2 }),
+        },
+      ];
+
+      function map(value, inMin, inMax, outMin, outMax) {
+        return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+      }
+
+      class AnimationManager {
+        constructor(canvasElement, configIndex = 0) {
+          this.canvas = canvasElement;
+          this.ctx = canvasElement.getContext("2d");
+          this.container = canvasElement.parentElement.parentElement;
+          this.config = animationConfigs[configIndex % animationConfigs.length];
+
+          this.particles = [];
+          this.width = 0;
+          this.height = 0;
+
+          this.init();
+        }
+
+        init() {
+          this.setupCanvas();
+          window.addEventListener("resize", () => this.setupCanvas());
+          this.animate();
+        }
+
+        setupCanvas() {
+          const dpr = window.devicePixelRatio || 1;
+          const rect = this.container.getBoundingClientRect();
+
+          this.canvas.width = rect.width * dpr;
+          this.canvas.height = rect.height * dpr;
+          this.ctx.scale(dpr, dpr);
+
+          this.width = rect.width;
+          this.height = rect.height;
+
+          this.particles = [];
+          for (let i = 0; i < this.config.particles; i++) {
+            this.particles.push(new Particle(this));
+          }
+
+          this.ctx.fillStyle = `rgb(${this.config.bgR}, ${this.config.bgG}, ${this.config.bgB})`;
+          this.ctx.fillRect(0, 0, this.width, this.height);
+        }
+
+        animate = () => {
+          this.ctx.fillStyle = `rgba(${this.config.bgR}, ${this.config.bgG}, ${this.config.bgB}, ${this.config.fadeOpacity})`;
+          this.ctx.fillRect(0, 0, this.width, this.height);
+
+          for (const particle of this.particles) {
+            particle.update();
+            particle.draw();
+          }
+
+          requestAnimationFrame(this.animate);
+        };
+      }
+
+      class Particle {
+        constructor(manager) {
+          this.manager = manager;
+          this.reset();
+        }
+
+        reset() {
+          this.x = Math.random() * this.manager.width;
+          this.y = Math.random() * this.manager.height;
+          this.vx = 0;
+          this.vy = 0;
+        }
+
+        update() {
+          const config = this.manager.config;
+          const mathX = map(this.x, 0, this.manager.width, 0, config.scale);
+          const mathY = map(this.y, 0, this.manager.height, 0, config.scale);
+          const vector = config.vectorFn(mathX, mathY);
+
+          this.x += vector.x * config.speed;
+          this.y += vector.y * config.speed;
+          this.vx = vector.x;
+          this.vy = vector.y;
+
+          const magnitudeSq = this.vx * this.vx + this.vy * this.vy;
+          const randomRespawnChance = 0.001;
+
+          if (this.x < 0 || this.x > this.manager.width || this.y < 0 || this.y > this.manager.height || magnitudeSq < 0.0001 || Math.random() < randomRespawnChance) {
+            this.reset();
+          }
+        }
+
+        draw() {
+          const config = this.manager.config;
+          const hue = map(this.x, 0, this.manager.width, config.hueStart, config.hueEnd);
+          this.manager.ctx.fillStyle = `hsl(${hue}, 80%, 60%)`;
+          this.manager.ctx.fillRect(this.x, this.y, config.size, config.size);
+        }
+      }
+
+      // Initialize all canvas animations
+      const canvases = document.querySelectorAll(".vector-bg-canvas");
+      let configIndex = 0;
+
+      canvases.forEach((canvas) => {
+        new AnimationManager(canvas, configIndex);
+        configIndex = (configIndex + 1) % animationConfigs.length;
+      });
+    </script>
+  </body>
+</html>
