@@ -891,7 +891,37 @@ animate();`;
     padding: 40px;
 }`;
 
-                const componentJsCode = baseJsCode + `
+                const componentJsCode = `// Vector Animation Script
+// Current field: ${currentDescription}
+
+// Configuration
+const NUM_PARTICLES = ${NUM_PARTICLES};
+const PARTICLE_SPEED = ${PARTICLE_SPEED};
+const PARTICLE_SIZE = ${PARTICLE_SIZE};
+const FIELD_SCALE = 8;
+const FADE_OPACITY = 0.05;
+const HUE_START = ${Math.round(HUE_START)};
+const HUE_END = ${Math.round(HUE_END)};
+const BG_COLOR_R = ${BG_COLOR_R};
+const BG_COLOR_G = ${BG_COLOR_G};
+const BG_COLOR_B = ${BG_COLOR_B};
+
+// Vector field function - this defines the animation behavior
+const vectorFunction = new Function('x', 'y', 
+    \`with(Math) { return { x: (${currentVxString}), y: (${currentVyString}) }; }\`
+);
+
+function getVectorAt(x, y) {
+    try {
+        return vectorFunction(x, y);
+    } catch (e) {
+        return { x: 0, y: 0 };
+    }
+}
+
+function map(value, inMin, inMax, outMin, outMax) {
+    return ((value - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+}
 
 // Get all canvas elements with the vector-bg-canvas class
 const canvases = document.querySelectorAll('.vector-bg-canvas');
@@ -906,6 +936,45 @@ canvases.forEach(canvasElement => {
     let localWidth = 0;
     let localHeight = 0;
     
+    // Particle class with access to local ctx
+    class Particle {
+        constructor() {
+            this.reset();
+        }
+        
+        reset() {
+            this.x = Math.random() * localWidth;
+            this.y = Math.random() * localHeight;
+            this.vx = 0;
+            this.vy = 0;
+        }
+        
+        update() {
+            const mathX = map(this.x, 0, localWidth, 0, FIELD_SCALE);
+            const mathY = map(this.y, 0, localHeight, 0, FIELD_SCALE);
+            const vector = getVectorAt(mathX, mathY);
+            
+            this.x += vector.x * PARTICLE_SPEED;
+            this.y += vector.y * PARTICLE_SPEED;
+            this.vx = vector.x;
+            this.vy = vector.y;
+
+            const magnitudeSq = (this.vx * this.vx) + (this.vy * this.vy);
+            const randomRespawnChance = 0.001;
+
+            if (this.x < 0 || this.x > localWidth || this.y < 0 || this.y > localHeight || 
+                magnitudeSq < 0.0001 || Math.random() < randomRespawnChance) {
+                this.reset();
+            }
+        }
+        
+        draw() {
+            const hue = map(this.x, 0, localWidth, HUE_START, HUE_END);
+            ctx.fillStyle = 'hsl(' + hue + ', 80%, 60%)';
+            ctx.fillRect(this.x, this.y, PARTICLE_SIZE, PARTICLE_SIZE);
+        }
+    }
+    
     function setupCanvas() {
         const dpr = window.devicePixelRatio || 1;
         const rect = container.getBoundingClientRect();
@@ -916,8 +985,6 @@ canvases.forEach(canvasElement => {
         
         localWidth = rect.width;
         localHeight = rect.height;
-        canvasWidth = localWidth;
-        canvasHeight = localHeight;
         
         localParticles = [];
         for (let i = 0; i < NUM_PARTICLES; i++) {
@@ -929,9 +996,6 @@ canvases.forEach(canvasElement => {
     }
     
     function animateCanvas() {
-        canvasWidth = localWidth;
-        canvasHeight = localHeight;
-        
         ctx.fillStyle = 'rgba(' + BG_COLOR_R + ', ' + BG_COLOR_G + ', ' + BG_COLOR_B + ', ' + FADE_OPACITY + ')';
         ctx.fillRect(0, 0, localWidth, localHeight);
         
