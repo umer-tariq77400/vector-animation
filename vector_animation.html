@@ -110,9 +110,9 @@
 <body class="bg-gray-900 text-white font-inter">
 
     <!-- Main content -->
-    <main class="min-h-screen w-full flex flex-col items-center justify-center p-4 md:p-8">
-        <div class="text-center mb-6 max-w-5xl w-full">
-            <h1 class="text-3xl md:text-5xl font-bold mb-3 text-cyan-400">Gemini Vector Field Generator</h1>
+    <main class="min-h-screen w-full flex flex-col items-center justify-center p-3 sm:p-4 md:p-8">
+        <div class="text-center mb-4 sm:mb-6 max-w-5xl w-full">
+            <h1 class="text-2xl sm:text-3xl md:text-5xl font-bold mb-2 sm:mb-3 text-cyan-400">Gemini Vector Field Generator</h1>
             
             <!-- NEW COLLAPSIBLE DESCRIPTION SECTION -->
             <div class="mb-4 bg-gray-800/30 p-3 rounded-xl text-left shadow-inner">
@@ -131,24 +131,33 @@
             </div>
             <!-- END NEW COLLAPSIBLE DESCRIPTION SECTION -->
 
-            <p id="equation-description" class="text-lg md:text-xl text-gray-300 transition-all duration-300">
-                Visualizing <code class="bg-gray-800 text-cyan-300 px-2 py-1 rounded">f(x,y) = (sin(x)+sin(y))î + (sin(x)-sin(y))ĵ</code>
+            <p id="equation-description" class="text-sm sm:text-lg md:text-xl text-gray-300 transition-all duration-300 break-words">
+                Visualizing <code class="bg-gray-800 text-cyan-300 px-2 py-1 rounded text-xs sm:text-sm">f(x,y) = (sin(x)+sin(y))î + (sin(x)-sin(y))ĵ</code>
             </p>
         </div>
 
         <!-- NEW: Gemini Interaction Panel -->
-        <div class="w-full max-w-5xl mb-4 p-4 bg-gray-800/50 border border-gray-700 rounded-lg shadow-lg">
-            <label for="prompt-input" class="block text-sm font-medium text-cyan-400 mb-2">Describe a vector field you want to see:</label>
-            <textarea id="prompt-input" rows="2" class="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="e.g., 'a swirling vortex in the middle', 'a flow moving right', 'complex waves'"></textarea>
+        <div class="w-full max-w-5xl mb-3 sm:mb-4 p-3 sm:p-4 bg-gray-800/50 border border-gray-700 rounded-lg shadow-lg">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-2">
+                <button id="toggle-api-key" class="order-1 sm:order-1 bg-gray-700 hover:bg-gray-600 text-cyan-400 text-xs font-medium py-1.5 px-3 rounded-md transition duration-200 flex items-center gap-1 border border-gray-600">
+                    <span>🔑 API Key</span>
+                    <span id="api-key-arrow" class="text-xs">▼</span>
+                </button>
+                <label for="prompt-input" class="order-2 sm:order-2 text-sm font-medium text-cyan-400">Describe a vector field you want to see:</label>
+            </div>
+            <div id="api-key-container" class="hidden mb-2">
+                <input type="password" id="api-key-input" class="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm" placeholder="Enter your Gemini API key (optional - overrides default key)">
+            </div>
+            <textarea id="prompt-input" rows="2" class="w-full p-2 sm:p-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm sm:text-base" placeholder="e.g., 'a swirling vortex in the middle', 'a flow moving right', 'complex waves'"></textarea>
             
-            <div class="flex flex-col sm:flex-row gap-3 mt-3">
-                <button id="generate-button" class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200">
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-3">
+                <button id="generate-button" class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 text-sm sm:text-base">
                     Generate New Field ✨
                 </button>
-                <button id="explain-button" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200">
+                <button id="explain-button" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 text-sm sm:text-base">
                     Explain Current Field ✨
                 </button>
-                <button id="export-button" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200">
+                <button id="export-button" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 text-sm sm:text-base">
                     Export Animation 📋
                 </button>
             </div>
@@ -157,7 +166,7 @@
             <!-- NEW: Preset Dropdown -->
             <div class="mt-4 pt-3 border-t border-gray-700">
                 <label for="preset-select" class="block text-sm font-medium text-cyan-400 mb-2">Or, try a preset field:</label>
-                <select id="preset-select" class="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <select id="preset-select" class="w-full p-2 sm:p-2.5 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm sm:text-base">
                     <option value="">-- Select a preset --</option>
                     <option value="vortex">🌀 Central Vortex</option>
                     <option value="wave">🌊 Complex Waves</option>
@@ -176,43 +185,38 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
                     <div>
                         <label for="color-start" class="block text-xs text-gray-400 mb-1">Particle Color Start:</label>
-                        <div class="flex items-center gap-2">
-                            <input type="color" id="color-start" value="#00ffff" class="w-12 h-8 rounded border border-gray-700 cursor-pointer">
-                            <span id="color-start-label" class="text-xs text-gray-300">#00ffff</span>
-                        </div>
+                        <input type="color" id="color-start" value="#00ffff" class="w-full h-8 rounded border border-gray-700 cursor-pointer">
                     </div>
                     <div>
                         <label for="color-end" class="block text-xs text-gray-400 mb-1">Particle Color End:</label>
-                        <div class="flex items-center gap-2">
-                            <input type="color" id="color-end" value="#0080ff" class="w-12 h-8 rounded border border-gray-700 cursor-pointer">
-                            <span id="color-end-label" class="text-xs text-gray-300">#0080ff</span>
-                        </div>
+                        <input type="color" id="color-end" value="#0080ff" class="w-full h-8 rounded border border-gray-700 cursor-pointer">
                     </div>
                     <div>
                         <label for="bg-color" class="block text-xs text-gray-400 mb-1">Background Color:</label>
-                        <div class="flex items-center gap-2">
-                            <input type="color" id="bg-color" value="#111827" class="w-12 h-8 rounded border border-gray-700 cursor-pointer">
-                            <span id="bg-color-label" class="text-xs text-gray-300">#111827</span>
-                        </div>
+                        <input type="color" id="bg-color" value="#111827" class="w-full h-8 rounded border border-gray-700 cursor-pointer">
                     </div>
                 </div>
 
                 <!-- Slider Controls -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div>
-                        <label for="speed-slider" class="block text-xs text-gray-400 mb-1">Particle Speed: <span id="speed-value">1.0</span>x</label>
-                        <input type="range" id="speed-slider" min="0.1" max="3" step="0.1" value="1" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                        <label for="count-slider" class="block text-xs text-gray-400 mb-1">Particle Count: <span id="count-value">1500</span></label>
+                        <input type="range" id="count-slider" min="100" max="3000" step="100" value="1500" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
                     </div>
                     <div>
                         <label for="size-slider" class="block text-xs text-gray-400 mb-1">Particle Size: <span id="size-value">1</span>px</label>
                         <input type="range" id="size-slider" min="1" max="5" step="1" value="1" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                    <div>
+                        <label for="speed-slider" class="block text-xs text-gray-400 mb-1">Particle Speed: <span id="speed-value">1.0</span>x</label>
+                        <input type="range" id="speed-slider" min="0.1" max="3" step="0.1" value="1" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
                     </div>
                 </div>
             </div>
         </div>
         
         <!-- The canvas element where the visualization will be drawn -->
-        <div class="w-full max-w-5xl aspect-[4/3] bg-gray-950 rounded-lg shadow-2xl border-2 border-cyan-700/50 overflow-hidden">
+        <div class="w-full max-w-5xl aspect-[4/3] bg-gray-950 rounded-lg shadow-2xl border-2 border-cyan-700/50 overflow-hidden min-h-[250px]">
             <canvas id="flowCanvas"></canvas>
         </div>
     </main>
@@ -327,13 +331,16 @@
             const colorStartInput = document.getElementById('color-start');
             const colorEndInput = document.getElementById('color-end');
             const bgColorInput = document.getElementById('bg-color');
-            const colorStartLabel = document.getElementById('color-start-label');
-            const colorEndLabel = document.getElementById('color-end-label');
-            const bgColorLabel = document.getElementById('bg-color-label');
             const speedSlider = document.getElementById('speed-slider');
             const sizeSlider = document.getElementById('size-slider');
+            const countSlider = document.getElementById('count-slider');
             const speedValue = document.getElementById('speed-value');
             const sizeValue = document.getElementById('size-value');
+            const countValue = document.getElementById('count-value');
+            const toggleApiKeyButton = document.getElementById('toggle-api-key');
+            const apiKeyArrow = document.getElementById('api-key-arrow');
+            const apiKeyContainer = document.getElementById('api-key-container');
+            const apiKeyInput = document.getElementById('api-key-input');
 
             // NEW Refs for description
             const toggleDescriptionButton = document.getElementById('toggle-description');
@@ -346,7 +353,7 @@
             let canvasHeight = 0;
             
             // --- Gemini API State ---
-            const apiKey = "AIzaSyCSUUMTIw2UQ6atm5goZARO5q44Sj31wt8";
+            const defaultApiKey = "AIzaSyCSUUMTIw2UQ6atm5goZARO5q44Sj31wt8";
             let vectorFunction;
             let currentVxString = "Math.sin(x) + Math.sin(y)";
             let currentVyString = "Math.sin(x) - Math.sin(y)";
@@ -423,6 +430,7 @@
              * Fetches from the Gemini API with exponential backoff.
              */
             async function fetchGeminiApi(payload, retries = 3, delay = 1000) {
+                const apiKey = apiKeyInput.value.trim() || defaultApiKey;
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
                 for (let i = 0; i < retries; i++) {
@@ -658,12 +666,16 @@ const canvas = document.getElementById('vectorCanvas');
 const ctx = canvas.getContext('2d');
 
 // Configuration
-const NUM_PARTICLES = 1500;
-const PARTICLE_SPEED = 1;
+const NUM_PARTICLES = ${NUM_PARTICLES};
+const PARTICLE_SPEED = ${PARTICLE_SPEED};
+const PARTICLE_SIZE = ${PARTICLE_SIZE};
 const FIELD_SCALE = 8;
 const FADE_OPACITY = 0.05;
-const HUE_START = 180;
-const HUE_END = 240;
+const HUE_START = ${Math.round(HUE_START)};
+const HUE_END = ${Math.round(HUE_END)};
+const BG_COLOR_R = ${BG_COLOR_R};
+const BG_COLOR_G = ${BG_COLOR_G};
+const BG_COLOR_B = ${BG_COLOR_B};
 
 let particles = [];
 let canvasWidth = 0;
@@ -671,7 +683,7 @@ let canvasHeight = 0;
 
 // Vector field function - this defines the animation behavior
 const vectorFunction = new Function('x', 'y', 
-    'with(Math) { return { x: (${currentVxString}), y: (${currentVyString}) }; }'
+    \`with(Math) { return { x: (${currentVxString}), y: (${currentVyString}) }; }\`
 );
 
 function getVectorAt(x, y) {
@@ -716,7 +728,7 @@ class Particle {
     draw() {
         const hue = map(this.x, 0, canvasWidth, HUE_START, HUE_END);
         ctx.fillStyle = 'hsl(' + hue + ', 80%, 60%)';
-        ctx.fillRect(this.x, this.y, 1, 1);
+        ctx.fillRect(this.x, this.y, PARTICLE_SIZE, PARTICLE_SIZE);
     }
 }
 
@@ -725,7 +737,7 @@ function map(value, inMin, inMax, outMin, outMax) {
 }
 
 function animate() {
-    ctx.fillStyle = 'rgba(17, 24, 39, ' + FADE_OPACITY + ')';
+    ctx.fillStyle = 'rgba(' + BG_COLOR_R + ', ' + BG_COLOR_G + ', ' + BG_COLOR_B + ', ' + FADE_OPACITY + ')';
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     
     for (const particle of particles) {
@@ -753,7 +765,7 @@ function setup() {
         particles.push(new Particle());
     }
     
-    ctx.fillStyle = '#111827';
+    ctx.fillStyle = 'rgb(' + BG_COLOR_R + ', ' + BG_COLOR_G + ', ' + BG_COLOR_B + ')';
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 }
 
@@ -852,17 +864,14 @@ ${jsCode}
 
             // Color input event listeners
             colorStartInput.addEventListener('input', (e) => {
-                colorStartLabel.textContent = e.target.value;
                 updateColors();
             });
 
             colorEndInput.addEventListener('input', (e) => {
-                colorEndLabel.textContent = e.target.value;
                 updateColors();
             });
 
             bgColorInput.addEventListener('input', (e) => {
-                bgColorLabel.textContent = e.target.value;
                 updateColors();
             });
 
@@ -875,6 +884,18 @@ ${jsCode}
             sizeSlider.addEventListener('input', (e) => {
                 PARTICLE_SIZE = parseInt(e.target.value);
                 sizeValue.textContent = PARTICLE_SIZE;
+            });
+
+            countSlider.addEventListener('input', (e) => {
+                NUM_PARTICLES = parseInt(e.target.value);
+                countValue.textContent = NUM_PARTICLES;
+                setup(); // Reinitialize particles with new count
+            });
+
+            // Toggle API key input
+            toggleApiKeyButton.addEventListener('click', () => {
+                const isHidden = apiKeyContainer.classList.toggle('hidden');
+                apiKeyArrow.textContent = isHidden ? '▼' : '▲';
             });
 
             // NEW: Listener for the collapsible description
