@@ -242,51 +242,103 @@
                 <h2 class="text-2xl font-bold text-green-400">Export Animation 📋</h2>
                 <button id="close-export-modal-button" class="text-gray-400 hover:text-white text-3xl">&times;</button>
             </div>
-            <div class="p-6">
-                <p class="text-gray-300 mb-4">Copy the code below to integrate this animation into your own project. See <a href="INTEGRATION.md" target="_blank" class="text-cyan-400 hover:text-cyan-300 underline">INTEGRATION.md</a> for detailed instructions.</p>
+            
+            <!-- Tab Navigation -->
+            <div class="flex border-b border-gray-700">
+                <button id="tab-page-bg" class="flex-1 py-3 px-4 text-center font-medium transition-all duration-200 border-b-2 border-green-400 text-green-400">
+                    🖼️ Page Background
+                </button>
+                <button id="tab-component-bg" class="flex-1 py-3 px-4 text-center font-medium transition-all duration-200 border-b-2 border-transparent text-gray-400 hover:text-gray-300">
+                    📦 Component Background
+                </button>
+            </div>
+            
+            <!-- Page Background Tab Content -->
+            <div id="page-bg-content" class="p-6">
+                <p class="text-gray-300 mb-4">Use this animation as a <strong>full-page background</strong> that stays fixed behind your content. The animation won't scroll with the page.</p>
                 
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-2">
                         <label class="text-sm font-medium text-green-400">HTML Code:</label>
-                        <button id="copy-html-button" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-1 px-3 rounded transition-all duration-200">
+                        <button id="copy-page-html-button" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-1 px-3 rounded transition-all duration-200">
                             Copy HTML
                         </button>
                     </div>
-                    <pre class="bg-gray-900 p-4 rounded border border-gray-700 overflow-x-auto"><code id="export-html" class="text-xs text-gray-300"></code></pre>
+                    <pre class="bg-gray-900 p-4 rounded border border-gray-700 overflow-x-auto"><code id="export-page-html" class="text-xs text-gray-300"></code></pre>
                 </div>
 
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-2">
                         <label class="text-sm font-medium text-green-400">CSS Code:</label>
-                        <button id="copy-css-button" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-1 px-3 rounded transition-all duration-200">
+                        <button id="copy-page-css-button" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-1 px-3 rounded transition-all duration-200">
                             Copy CSS
                         </button>
                     </div>
-                    <pre class="bg-gray-900 p-4 rounded border border-gray-700 overflow-x-auto"><code id="export-css" class="text-xs text-gray-300"></code></pre>
+                    <pre class="bg-gray-900 p-4 rounded border border-gray-700 overflow-x-auto"><code id="export-page-css" class="text-xs text-gray-300"></code></pre>
                 </div>
 
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-2">
                         <label class="text-sm font-medium text-green-400">JavaScript Code:</label>
-                        <button id="copy-js-button" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-1 px-3 rounded transition-all duration-200">
+                        <button id="copy-page-js-button" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-1 px-3 rounded transition-all duration-200">
                             Copy JS
                         </button>
                     </div>
-                    <pre class="bg-gray-900 p-4 rounded border border-gray-700 overflow-x-auto"><code id="export-js" class="text-xs text-gray-300"></code></pre>
+                    <pre class="bg-gray-900 p-4 rounded border border-gray-700 overflow-x-auto"><code id="export-page-js" class="text-xs text-gray-300"></code></pre>
+                </div>
+
+                <div class="bg-gray-900/50 p-4 rounded border border-gray-700 mt-4">
+                    <p class="text-xs text-gray-400 mb-2"><strong>Usage:</strong></p>
+                    <ol class="text-xs text-gray-400 list-decimal list-inside space-y-1">
+                        <li>Add the HTML code anywhere in your &lt;body&gt; tag</li>
+                        <li>Add the CSS to your stylesheet or in a &lt;style&gt; tag</li>
+                        <li>Add the JS to your script file or in a &lt;script&gt; tag</li>
+                        <li>Your content will appear on top of the animation</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- Component Background Tab Content -->
+            <div id="component-bg-content" class="p-6 hidden">
+                <p class="text-gray-300 mb-4">Use this animation as a <strong>background for a specific component</strong> (hero section, card, etc.). The animation stays within the component boundaries.</p>
+                
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-sm font-medium text-green-400">HTML Code:</label>
+                        <button id="copy-component-html-button" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-1 px-3 rounded transition-all duration-200">
+                            Copy HTML
+                        </button>
+                    </div>
+                    <pre class="bg-gray-900 p-4 rounded border border-gray-700 overflow-x-auto"><code id="export-component-html" class="text-xs text-gray-300"></code></pre>
                 </div>
 
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-2">
-                        <label class="text-sm font-medium text-green-400">Complete HTML File:</label>
-                        <button id="copy-complete-button" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-1 px-3 rounded transition-all duration-200">
-                            Copy Complete
+                        <label class="text-sm font-medium text-green-400">CSS Code:</label>
+                        <button id="copy-component-css-button" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-1 px-3 rounded transition-all duration-200">
+                            Copy CSS
                         </button>
                     </div>
-                    <pre class="bg-gray-900 p-4 rounded border border-gray-700 overflow-x-auto"><code id="export-complete" class="text-xs text-gray-300"></code></pre>
+                    <pre class="bg-gray-900 p-4 rounded border border-gray-700 overflow-x-auto"><code id="export-component-css" class="text-xs text-gray-300"></code></pre>
                 </div>
 
-                <p id="export-status" class="text-center text-sm text-green-400 mt-3"></p>
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-sm font-medium text-green-400">JavaScript Code:</label>
+                        <button id="copy-component-js-button" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-1 px-3 rounded transition-all duration-200">
+                            Copy JS
+                        </button>
+                    </div>
+                    <pre class="bg-gray-900 p-4 rounded border border-gray-700 overflow-x-auto"><code id="export-component-js" class="text-xs text-gray-300"></code></pre>
+                </div>
+
+                <div class="bg-gray-900/50 p-4 rounded border border-gray-700 mt-4">
+                    <p class="text-xs text-gray-400 mb-2"><strong>Example: Hero Section with Animation Background</strong></p>
+                    <pre class="bg-gray-950 p-3 rounded text-xs text-gray-300 overflow-x-auto"><code id="hero-example-code"></code></pre>
+                </div>
             </div>
+
+            <p id="export-status" class="text-center text-sm text-green-400 px-6 pb-4"></p>
         </div>
     </div>
 
@@ -318,15 +370,31 @@
             const closeModalButton = document.getElementById('close-modal-button');
             const exportModal = document.getElementById('export-modal');
             const closeExportModalButton = document.getElementById('close-export-modal-button');
-            const exportHtmlCode = document.getElementById('export-html');
-            const exportCssCode = document.getElementById('export-css');
-            const exportJsCode = document.getElementById('export-js');
-            const exportCompleteCode = document.getElementById('export-complete');
+            
+            // Tab elements
+            const tabPageBg = document.getElementById('tab-page-bg');
+            const tabComponentBg = document.getElementById('tab-component-bg');
+            const pageBgContent = document.getElementById('page-bg-content');
+            const componentBgContent = document.getElementById('component-bg-content');
+            
+            // Page background export elements
+            const exportPageHtmlCode = document.getElementById('export-page-html');
+            const exportPageCssCode = document.getElementById('export-page-css');
+            const exportPageJsCode = document.getElementById('export-page-js');
+            const copyPageHtmlButton = document.getElementById('copy-page-html-button');
+            const copyPageCssButton = document.getElementById('copy-page-css-button');
+            const copyPageJsButton = document.getElementById('copy-page-js-button');
+            
+            // Component background export elements
+            const exportComponentHtmlCode = document.getElementById('export-component-html');
+            const exportComponentCssCode = document.getElementById('export-component-css');
+            const exportComponentJsCode = document.getElementById('export-component-js');
+            const heroExampleCode = document.getElementById('hero-example-code');
+            const copyComponentHtmlButton = document.getElementById('copy-component-html-button');
+            const copyComponentCssButton = document.getElementById('copy-component-css-button');
+            const copyComponentJsButton = document.getElementById('copy-component-js-button');
+            
             const exportStatus = document.getElementById('export-status');
-            const copyHtmlButton = document.getElementById('copy-html-button');
-            const copyCssButton = document.getElementById('copy-css-button');
-            const copyJsButton = document.getElementById('copy-js-button');
-            const copyCompleteButton = document.getElementById('copy-complete-button');
             const presetSelect = document.getElementById('preset-select');
             const colorStartInput = document.getElementById('color-start');
             const colorEndInput = document.getElementById('color-end');
@@ -643,27 +711,9 @@ What kind of patterns (swirls, waves, flows) would this create and why?`;
              * Generates self-contained HTML, CSS, and JS code for the current animation
              */
             function handleExportClick() {
-                // Generate the CSS
-                const cssCode = `/* Vector Animation Styles */
-body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #111827;
-}
-
-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-}`;
-
-                // Generate the JavaScript with the current vector field
-                const jsCode = `// Vector Animation Script
+                // Generate the base JavaScript code (common for both modes)
+                const baseJsCode = `// Vector Animation Script
 // Current field: ${currentDescription}
-
-const canvas = document.getElementById('vectorCanvas');
-const ctx = canvas.getContext('2d');
 
 // Configuration
 const NUM_PARTICLES = ${NUM_PARTICLES};
@@ -746,7 +796,32 @@ function animate() {
     }
     
     requestAnimationFrame(animate);
+}`;
+
+                // ========== PAGE BACKGROUND MODE ==========
+                const pageHtmlCode = `<canvas id="vectorCanvas"></canvas>`;
+                
+                const pageCssCode = `/* Vector Animation - Page Background */
+#vectorCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    display: block;
 }
+
+/* Optional: Ensure body doesn't have overflow issues */
+body {
+    margin: 0;
+    padding: 0;
+}`;
+
+                const pageJsCode = baseJsCode + `
+
+const canvas = document.getElementById('vectorCanvas');
+const ctx = canvas.getContext('2d');
 
 function setup() {
     const dpr = window.devicePixelRatio || 1;
@@ -774,33 +849,142 @@ setup();
 window.addEventListener('resize', setup);
 animate();`;
 
-                // Generate the HTML
-                const htmlCode = `<canvas id="vectorCanvas"></canvas>`;
+                // ========== COMPONENT BACKGROUND MODE ==========
+                const componentHtmlCode = `<!-- Wrap your component content in a container with the class 'vector-bg-container' -->
+<div class="vector-bg-container">
+    <!-- The canvas for the animation background -->
+    <canvas class="vector-bg-canvas"></canvas>
+    
+    <!-- Your component content goes here -->
+    <div class="vector-bg-content">
+        <!-- Add your content (text, images, buttons, etc.) -->
+        <h1>Your Content Here</h1>
+        <p>This content appears on top of the animation.</p>
+    </div>
+</div>`;
 
-                // Generate complete HTML file
-                const completeHtml = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vector Field Animation - ${currentDescription}</title>
-    <style>
-${cssCode}
-    </style>
-</head>
-<body>
-    ${htmlCode}
-    <` + `script>
-${jsCode}
-    </` + `script>
-</body>
-</html>`;
+                const componentCssCode = `/* Vector Animation - Component Background */
+.vector-bg-container {
+    position: relative;
+    width: 100%;
+    min-height: 400px; /* Adjust as needed */
+    overflow: hidden;
+}
 
-                // Populate the modal with the generated code
-                exportHtmlCode.textContent = htmlCode;
-                exportCssCode.textContent = cssCode;
-                exportJsCode.textContent = jsCode;
-                exportCompleteCode.textContent = completeHtml;
+.vector-bg-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.vector-bg-content {
+    position: relative;
+    z-index: 1;
+    /* Add padding/styling for your content */
+    padding: 40px;
+}`;
+
+                const componentJsCode = baseJsCode + `
+
+// Get all canvas elements with the vector-bg-canvas class
+const canvases = document.querySelectorAll('.vector-bg-canvas');
+
+// Initialize animation for each canvas
+canvases.forEach(canvasElement => {
+    const canvas = canvasElement;
+    const ctx = canvas.getContext('2d');
+    const container = canvas.parentElement;
+    
+    let localParticles = [];
+    let localWidth = 0;
+    let localHeight = 0;
+    
+    function setupCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = container.getBoundingClientRect();
+        
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        
+        localWidth = rect.width;
+        localHeight = rect.height;
+        canvasWidth = localWidth;
+        canvasHeight = localHeight;
+        
+        localParticles = [];
+        for (let i = 0; i < NUM_PARTICLES; i++) {
+            localParticles.push(new Particle());
+        }
+        
+        ctx.fillStyle = 'rgb(' + BG_COLOR_R + ', ' + BG_COLOR_G + ', ' + BG_COLOR_B + ')';
+        ctx.fillRect(0, 0, localWidth, localHeight);
+    }
+    
+    function animateCanvas() {
+        canvasWidth = localWidth;
+        canvasHeight = localHeight;
+        
+        ctx.fillStyle = 'rgba(' + BG_COLOR_R + ', ' + BG_COLOR_G + ', ' + BG_COLOR_B + ', ' + FADE_OPACITY + ')';
+        ctx.fillRect(0, 0, localWidth, localHeight);
+        
+        for (const particle of localParticles) {
+            particle.update();
+            particle.draw();
+        }
+        
+        requestAnimationFrame(animateCanvas);
+    }
+    
+    // Initialize this canvas
+    setupCanvas();
+    window.addEventListener('resize', setupCanvas);
+    animateCanvas();
+});`;
+
+                // Generate hero section example
+                const heroExampleHtml = `<!-- Example: Hero Section with Vector Animation Background -->
+<div class="vector-bg-container" style="min-height: 600px; background-color: #111827;">
+    <canvas class="vector-bg-canvas"></canvas>
+    
+    <div class="vector-bg-content" style="display: flex; align-items: center; min-height: 600px;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; gap: 40px; align-items: center;">
+            <!-- Left side: Text and CTA -->
+            <div style="flex: 1; color: white;">
+                <h1 style="font-size: 48px; font-weight: bold; margin-bottom: 20px;">
+                    Welcome to Our Amazing Product
+                </h1>
+                <p style="font-size: 18px; margin-bottom: 30px; opacity: 0.9;">
+                    Experience the future with our cutting-edge solution that transforms the way you work.
+                </p>
+                <button style="background: #06b6d4; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;">
+                    Get Started Now
+                </button>
+            </div>
+            
+            <!-- Right side: Image/Video placeholder -->
+            <div style="flex: 1;">
+                <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 40px; text-align: center; backdrop-filter: blur(10px);">
+                    <p style="color: white; font-size: 18px;">Your Image or Video Here</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>`;
+
+                // Populate the page background tab
+                exportPageHtmlCode.textContent = pageHtmlCode;
+                exportPageCssCode.textContent = pageCssCode;
+                exportPageJsCode.textContent = pageJsCode;
+
+                // Populate the component background tab
+                exportComponentHtmlCode.textContent = componentHtmlCode;
+                exportComponentCssCode.textContent = componentCssCode;
+                exportComponentJsCode.textContent = componentJsCode;
+                heroExampleCode.textContent = heroExampleHtml;
 
                 // Show the export modal
                 exportModal.classList.remove('hidden');
@@ -823,6 +1007,33 @@ ${jsCode}
                 }
             }
 
+            /**
+             * Tab switching function
+             */
+            function switchTab(tabName) {
+                if (tabName === 'page') {
+                    // Update tab buttons
+                    tabPageBg.classList.add('border-green-400', 'text-green-400');
+                    tabPageBg.classList.remove('border-transparent', 'text-gray-400');
+                    tabComponentBg.classList.add('border-transparent', 'text-gray-400');
+                    tabComponentBg.classList.remove('border-green-400', 'text-green-400');
+                    
+                    // Show/hide content
+                    pageBgContent.classList.remove('hidden');
+                    componentBgContent.classList.add('hidden');
+                } else if (tabName === 'component') {
+                    // Update tab buttons
+                    tabComponentBg.classList.add('border-green-400', 'text-green-400');
+                    tabComponentBg.classList.remove('border-transparent', 'text-gray-400');
+                    tabPageBg.classList.add('border-transparent', 'text-gray-400');
+                    tabPageBg.classList.remove('border-green-400', 'text-green-400');
+                    
+                    // Show/hide content
+                    componentBgContent.classList.remove('hidden');
+                    pageBgContent.classList.add('hidden');
+                }
+            }
+
 
             // --- Event Listeners ---
             generateButton.addEventListener('click', handleGenerateClick);
@@ -837,21 +1048,34 @@ ${jsCode}
                 exportModal.classList.add('hidden');
             });
             
-            // Copy button event listeners
-            copyHtmlButton.addEventListener('click', () => {
-                copyToClipboard(exportHtmlCode.textContent, copyHtmlButton, '✅ HTML copied to clipboard!');
+            // Tab switching event listeners
+            tabPageBg.addEventListener('click', () => switchTab('page'));
+            tabComponentBg.addEventListener('click', () => switchTab('component'));
+            
+            // Page background copy button event listeners
+            copyPageHtmlButton.addEventListener('click', () => {
+                copyToClipboard(exportPageHtmlCode.textContent, copyPageHtmlButton, '✅ HTML copied to clipboard!');
             });
             
-            copyCssButton.addEventListener('click', () => {
-                copyToClipboard(exportCssCode.textContent, copyCssButton, '✅ CSS copied to clipboard!');
+            copyPageCssButton.addEventListener('click', () => {
+                copyToClipboard(exportPageCssCode.textContent, copyPageCssButton, '✅ CSS copied to clipboard!');
             });
             
-            copyJsButton.addEventListener('click', () => {
-                copyToClipboard(exportJsCode.textContent, copyJsButton, '✅ JavaScript copied to clipboard!');
+            copyPageJsButton.addEventListener('click', () => {
+                copyToClipboard(exportPageJsCode.textContent, copyPageJsButton, '✅ JavaScript copied to clipboard!');
             });
             
-            copyCompleteButton.addEventListener('click', () => {
-                copyToClipboard(exportCompleteCode.textContent, copyCompleteButton, '✅ Complete HTML copied to clipboard!');
+            // Component background copy button event listeners
+            copyComponentHtmlButton.addEventListener('click', () => {
+                copyToClipboard(exportComponentHtmlCode.textContent, copyComponentHtmlButton, '✅ HTML copied to clipboard!');
+            });
+            
+            copyComponentCssButton.addEventListener('click', () => {
+                copyToClipboard(exportComponentCssCode.textContent, copyComponentCssButton, '✅ CSS copied to clipboard!');
+            });
+            
+            copyComponentJsButton.addEventListener('click', () => {
+                copyToClipboard(exportComponentJsCode.textContent, copyComponentJsButton, '✅ JavaScript copied to clipboard!');
             });
             
             // Preset dropdown event listener
