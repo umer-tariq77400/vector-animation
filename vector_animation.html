@@ -110,9 +110,9 @@
 <body class="bg-gray-900 text-white font-inter">
 
     <!-- Main content -->
-    <main class="min-h-screen w-full flex flex-col items-center justify-center p-4 md:p-8">
-        <div class="text-center mb-6 max-w-5xl w-full">
-            <h1 class="text-3xl md:text-5xl font-bold mb-3 text-cyan-400">Gemini Vector Field Generator</h1>
+    <main class="min-h-screen w-full flex flex-col items-center justify-center p-3 sm:p-4 md:p-8">
+        <div class="text-center mb-4 sm:mb-6 max-w-5xl w-full">
+            <h1 class="text-2xl sm:text-3xl md:text-5xl font-bold mb-2 sm:mb-3 text-cyan-400">Gemini Vector Field Generator</h1>
             
             <!-- NEW COLLAPSIBLE DESCRIPTION SECTION -->
             <div class="mb-4 bg-gray-800/30 p-3 rounded-xl text-left shadow-inner">
@@ -131,32 +131,33 @@
             </div>
             <!-- END NEW COLLAPSIBLE DESCRIPTION SECTION -->
 
-            <p id="equation-description" class="text-lg md:text-xl text-gray-300 transition-all duration-300">
-                Visualizing <code class="bg-gray-800 text-cyan-300 px-2 py-1 rounded">f(x,y) = (sin(x)+sin(y))î + (sin(x)-sin(y))ĵ</code>
+            <p id="equation-description" class="text-sm sm:text-lg md:text-xl text-gray-300 transition-all duration-300 break-words">
+                Visualizing <code class="bg-gray-800 text-cyan-300 px-2 py-1 rounded text-xs sm:text-sm">f(x,y) = (sin(x)+sin(y))î + (sin(x)-sin(y))ĵ</code>
             </p>
         </div>
 
         <!-- NEW: Gemini Interaction Panel -->
-        <div class="w-full max-w-5xl mb-4 p-4 bg-gray-800/50 border border-gray-700 rounded-lg shadow-lg">
-            <div class="flex items-start gap-2 mb-2">
-                <label for="prompt-input" class="text-sm font-medium text-cyan-400 whitespace-nowrap pt-1">Describe a vector field you want to see:</label>
-                <button id="toggle-api-key" class="text-xs text-gray-400 hover:text-cyan-400 transition duration-200 whitespace-nowrap">
-                    [API Key ▼]
+        <div class="w-full max-w-5xl mb-3 sm:mb-4 p-3 sm:p-4 bg-gray-800/50 border border-gray-700 rounded-lg shadow-lg">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 mb-2">
+                <button id="toggle-api-key" class="order-1 sm:order-1 bg-gray-700 hover:bg-gray-600 text-cyan-400 text-xs font-medium py-1.5 px-3 rounded-md transition duration-200 flex items-center gap-1 border border-gray-600">
+                    <span>🔑 API Key</span>
+                    <span id="api-key-arrow" class="text-xs">▼</span>
                 </button>
+                <label for="prompt-input" class="order-2 sm:order-2 text-sm font-medium text-cyan-400">Describe a vector field you want to see:</label>
             </div>
             <div id="api-key-container" class="hidden mb-2">
                 <input type="password" id="api-key-input" class="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm" placeholder="Enter your Gemini API key (optional - overrides default key)">
             </div>
-            <textarea id="prompt-input" rows="2" class="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500" placeholder="e.g., 'a swirling vortex in the middle', 'a flow moving right', 'complex waves'"></textarea>
+            <textarea id="prompt-input" rows="2" class="w-full p-2 sm:p-3 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm sm:text-base" placeholder="e.g., 'a swirling vortex in the middle', 'a flow moving right', 'complex waves'"></textarea>
             
-            <div class="flex flex-col sm:flex-row gap-3 mt-3">
-                <button id="generate-button" class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200">
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-3">
+                <button id="generate-button" class="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 text-sm sm:text-base">
                     Generate New Field ✨
                 </button>
-                <button id="explain-button" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200">
+                <button id="explain-button" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 text-sm sm:text-base">
                     Explain Current Field ✨
                 </button>
-                <button id="export-button" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200">
+                <button id="export-button" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-3 sm:px-4 rounded-lg transition-all duration-200 text-sm sm:text-base">
                     Export Animation 📋
                 </button>
             </div>
@@ -165,7 +166,7 @@
             <!-- NEW: Preset Dropdown -->
             <div class="mt-4 pt-3 border-t border-gray-700">
                 <label for="preset-select" class="block text-sm font-medium text-cyan-400 mb-2">Or, try a preset field:</label>
-                <select id="preset-select" class="w-full p-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <select id="preset-select" class="w-full p-2 sm:p-2.5 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm sm:text-base">
                     <option value="">-- Select a preset --</option>
                     <option value="vortex">🌀 Central Vortex</option>
                     <option value="wave">🌊 Complex Waves</option>
@@ -215,7 +216,7 @@
         </div>
         
         <!-- The canvas element where the visualization will be drawn -->
-        <div class="w-full max-w-5xl aspect-[4/3] bg-gray-950 rounded-lg shadow-2xl border-2 border-cyan-700/50 overflow-hidden">
+        <div class="w-full max-w-5xl aspect-[4/3] bg-gray-950 rounded-lg shadow-2xl border-2 border-cyan-700/50 overflow-hidden min-h-[250px]">
             <canvas id="flowCanvas"></canvas>
         </div>
     </main>
@@ -337,6 +338,7 @@
             const sizeValue = document.getElementById('size-value');
             const countValue = document.getElementById('count-value');
             const toggleApiKeyButton = document.getElementById('toggle-api-key');
+            const apiKeyArrow = document.getElementById('api-key-arrow');
             const apiKeyContainer = document.getElementById('api-key-container');
             const apiKeyInput = document.getElementById('api-key-input');
 
@@ -893,7 +895,7 @@ ${jsCode}
             // Toggle API key input
             toggleApiKeyButton.addEventListener('click', () => {
                 const isHidden = apiKeyContainer.classList.toggle('hidden');
-                toggleApiKeyButton.textContent = isHidden ? '[API Key ▼]' : '[API Key ▲]';
+                apiKeyArrow.textContent = isHidden ? '▼' : '▲';
             });
 
             // NEW: Listener for the collapsible description
