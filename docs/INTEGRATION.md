@@ -2,6 +2,25 @@
 
 This guide explains how to export and integrate the vector field animations into your own projects as backgrounds.
 
+## 📂 Live Examples
+
+Before diving into the integration details, check out these working examples in the `examples/` folder:
+
+- **[blackbg_whitetext.html](../examples/blackbg_whitetext.html)** - Full-page background with dark theme and white particles
+- **[whitebg_blacktext.html](../examples/whitebg_blacktext.html)** - Full-page background with light theme and dark particles  
+- **[component_animation.html](../examples/component_animation.html)** - Multiple component backgrounds (hero section, cards, etc.) on a single page
+
+You can view these examples live at:
+- [Black Background Example](https://umer-tariq77400.github.io/vector-animation/examples/blackbg_whitetext.html)
+- [White Background Example](https://umer-tariq77400.github.io/vector-animation/examples/whitebg_blacktext.html)
+- [Component Background Example](https://umer-tariq77400.github.io/vector-animation/examples/component_animation.html)
+
+## ⚠️ Important Limitation
+
+**You cannot use two different animations on a single page.** Due to the technical implementation, each page can only run one vector field function at a time. However, you can use the same animation as a background for multiple components on the same page (as demonstrated in `component_animation.html`).
+
+If you need different animations on different pages of your website, that works perfectly fine - just use a different animation on each page. The limitation only applies to having multiple *different* animations on the *same* page simultaneously.
+
 ## Export Options
 
 The Vector Field Generator now offers **two export modes** to suit different use cases:
@@ -22,6 +41,8 @@ The Vector Field Generator now offers **two export modes** to suit different use
 ## Option 1: Page Background
 
 Use this option when you want a **fixed, full-page background** that stays in place behind all your page content as users scroll.
+
+**See it in action:** Check out [blackbg_whitetext.html](../examples/blackbg_whitetext.html) and [whitebg_blacktext.html](../examples/whitebg_blacktext.html) for live examples of this approach.
 
 ### How it Works
 
@@ -134,6 +155,8 @@ Add the exported JavaScript code in a `<script>` tag before the closing `</body>
 
 Use this option when you want the animation as a **background for specific components** like hero sections, cards, jumbotrons, or any container element.
 
+**See it in action:** Check out [component_animation.html](../examples/component_animation.html) for a complete showcase with multiple animated components on one page.
+
 ### How it Works
 
 - The animation is contained within a specific container
@@ -204,152 +227,32 @@ Add the exported JavaScript code. Unlike page background, this code supports **m
 
 ### Example: Hero Section
 
-Here's a complete example of a hero section with the animation as a background:
+For a complete, styled hero section example, see [component_animation.html](../examples/component_animation.html).
+
+Basic structure:
 
 ```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hero Section with Animation</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-        }
-        
-        /* Vector Animation - Component Background */
-        .vector-bg-container {
-            position: relative;
-            width: 100%;
-            min-height: 600px;
-            overflow: hidden;
-            background-color: #111827; /* Fallback color */
-        }
-
-        .vector-bg-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        .vector-bg-content {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            align-items: center;
-            min-height: 600px;
-            padding: 40px;
-        }
-        
-        /* Hero Section Styling */
-        .hero-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            gap: 40px;
-            align-items: center;
-            width: 100%;
-        }
-        
-        .hero-text {
-            flex: 1;
-            color: white;
-        }
-        
-        .hero-text h1 {
-            font-size: 48px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        
-        .hero-text p {
-            font-size: 18px;
-            margin-bottom: 30px;
-            opacity: 0.9;
-        }
-        
-        .hero-cta {
-            background: #06b6d4;
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .hero-cta:hover {
-            background: #0891b2;
-        }
-        
-        .hero-visual {
-            flex: 1;
-        }
-        
-        .placeholder {
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 60px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            color: white;
-        }
-        
-        /* Regular content section */
-        .content-section {
-            padding: 80px 40px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-    </style>
-</head>
-<body>
-    <!-- Hero Section with Vector Animation Background -->
-    <div class="vector-bg-container">
-        <canvas class="vector-bg-canvas"></canvas>
-        
-        <div class="vector-bg-content">
-            <div class="hero-inner">
-                <!-- Left side: Text and CTA -->
-                <div class="hero-text">
-                    <h1>Welcome to Our Amazing Product</h1>
-                    <p>Experience the future with our cutting-edge solution that transforms the way you work.</p>
-                    <button class="hero-cta">Get Started Now</button>
-                </div>
-                
-                <!-- Right side: Visual element -->
-                <div class="hero-visual">
-                    <div class="placeholder">
-                        <p>Your Image or Video Here</p>
-                    </div>
-                </div>
-            </div>
+<div class="vector-bg-container" style="min-height: 600px;">
+    <canvas class="vector-bg-canvas"></canvas>
+    
+    <div class="vector-bg-content" style="display: flex; align-items: center; min-height: 600px; padding: 40px;">
+        <div style="max-width: 1200px; margin: 0 auto; color: white;">
+            <h1 style="font-size: 48px; font-weight: bold; margin-bottom: 20px;">
+                Welcome to Our Amazing Product
+            </h1>
+            <p style="font-size: 18px; margin-bottom: 30px;">
+                Experience the future with our cutting-edge solution.
+            </p>
+            <button style="background: #06b6d4; color: white; padding: 15px 30px; border: none; border-radius: 8px;">
+                Get Started Now
+            </button>
         </div>
     </div>
-    
-    <!-- Regular page content -->
-    <div class="content-section">
-        <h2>More Content Below</h2>
-        <p>This is regular page content that appears below the hero section.</p>
-    </div>
-    
-    <script>
-        // Paste the exported JavaScript code here
-    </script>
-</body>
-</html>
+</div>
+
+<script>
+    // Paste the exported JavaScript code here
+</script>
 ```
 
 ### Example: Card with Animation Background
@@ -371,11 +274,7 @@ Here's a complete example of a hero section with the animation as a background:
     .card-content {
         text-align: center;
         color: white;
-    }
-    
-    .card-content h3 {
-        font-size: 24px;
-        margin-bottom: 10px;
+        padding: 40px;
     }
 </style>
 
@@ -389,7 +288,13 @@ Here's a complete example of a hero section with the animation as a background:
         </div>
     </div>
 </div>
+
+<script>
+    // Paste the exported JavaScript code here
+</script>
 ```
+
+**For more complete examples, see [component_animation.html](../examples/component_animation.html)**
 
 ---
 
@@ -412,21 +317,14 @@ const BG_COLOR_B = 39;           // Background color - Blue component (0-255)
 
 ### Color Customization
 
-Change the color gradient by modifying `HUE_START` and `HUE_END`:
-- Red: 0
-- Orange: 30
-- Yellow: 60
-- Green: 120
-- Cyan: 180
-- Blue: 240
-- Purple: 280
-- Pink: 320
+Change the color gradient by modifying `HUE_START` and `HUE_END` (values 0-360):
+Red: 0 | Orange: 30 | Yellow: 60 | Green: 120 | Cyan: 180 | Blue: 240 | Purple: 280 | Pink: 320
 
 ### Performance Tuning
 
-- **For better performance:** Reduce `NUM_PARTICLES` (e.g., 500-1000)
-- **For denser animation:** Increase `NUM_PARTICLES` (e.g., 2000-3000)
-- **For slower devices:** Reduce both `NUM_PARTICLES` and `PARTICLE_SPEED`
+- **Better performance:** Reduce `NUM_PARTICLES` (500-1000)
+- **Denser animation:** Increase `NUM_PARTICLES` (2000-3000)  
+- **Slower devices:** Reduce both `NUM_PARTICLES` and `PARTICLE_SPEED`
 
 ---
 
@@ -435,120 +333,68 @@ Change the color gradient by modifying `HUE_START` and `HUE_END`:
 ### Page Background
 - Only one page background animation per page
 - Uses ID selector (`#vectorCanvas`)
+- **Cannot have two different animations on the same page**
 
 ### Component Background
 - Supports **multiple instances** on the same page
-- Each component gets its own animation
+- Each component gets its own canvas with the **same animation**
 - Simply add more `.vector-bg-container` elements
 - The JavaScript automatically handles all instances
+- **All instances use the same vector field function** - you cannot mix different animations
 
-Example with multiple components:
-
-```html
-<!-- Hero Section -->
-<div class="vector-bg-container">
-    <canvas class="vector-bg-canvas"></canvas>
-    <div class="vector-bg-content">
-        <h1>Hero Section</h1>
-    </div>
-</div>
-
-<!-- Features Section -->
-<div class="content">
-    <h2>Some regular content</h2>
-</div>
-
-<!-- Another Animated Section -->
-<div class="vector-bg-container">
-    <canvas class="vector-bg-canvas"></canvas>
-    <div class="vector-bg-content">
-        <h2>Another Animated Section</h2>
-    </div>
-</div>
-```
+**Important Note:** The same animation can be used across multiple components on a page (see [component_animation.html](../examples/component_animation.html) for an example), but you cannot have different vector field animations running simultaneously. This is because all animations share the same vector field function. If you need different animations, use them on different pages of your website.
 
 ---
 
 ## Browser Compatibility
 
-The animation works in all modern browsers that support:
-- HTML5 Canvas
-- ES6 JavaScript
-- RequestAnimationFrame API
+Works in all modern browsers supporting HTML5 Canvas, ES6 JavaScript, and RequestAnimationFrame API.
 
-**Supported browsers:**
-- Chrome 60+
-- Firefox 60+
-- Safari 12+
-- Edge 79+
+**Supported:** Chrome 60+, Firefox 60+, Safari 12+, Edge 79+
 
 ---
 
 ## Troubleshooting
 
 ### Animation doesn't appear
-
-**For Page Background:**
-- Make sure the canvas has the correct ID (`id="vectorCanvas"`)
-- Check that the JavaScript is loaded after the DOM is ready
-- Verify the z-index is negative (`z-index: -1`)
-
-**For Component Background:**
-- Ensure the container has the class `vector-bg-container`
-- Verify the canvas has the class `vector-bg-canvas`
-- Check that the container has a height (set `min-height`)
+- **Page Background:** Check canvas ID (`vectorCanvas`), z-index (-1), and JS loads after DOM
+- **Component Background:** Verify container class (`vector-bg-container`), canvas class (`vector-bg-canvas`), and container has min-height
 
 ### Animation is too slow
-- Reduce `NUM_PARTICLES` (try 500-800)
-- Reduce canvas resolution by adjusting devicePixelRatio
-- Check if hardware acceleration is enabled in your browser
+- Reduce `NUM_PARTICLES` (try 500-800) or adjust devicePixelRatio
+- Ensure browser hardware acceleration is enabled
 
 ### Content not visible on top
-- Ensure content has `position: relative` and `z-index: 1` or higher
-- For page background, verify the canvas has `z-index: -1`
-- Check that your text color contrasts with the animation
+- Content needs `position: relative` and `z-index: 1` or higher
+- For page background, canvas must have `z-index: -1`
+- Check text color contrasts with animation
 
 ### Animation doesn't fit the container
-- For component background, ensure the container has an explicit height
-- Check that `overflow: hidden` is applied to the container
-- Verify there are no conflicting CSS rules
+- Set explicit height on component container with `min-height`
+- Apply `overflow: hidden` to container
+- Check for conflicting CSS rules
 
 ### Multiple instances not working
-- This is only supported for Component Background mode
-- Ensure you're using class selectors (`.vector-bg-canvas`), not IDs
-- Make sure each container follows the same HTML structure
+- Only supported for Component Background mode
+- Use class selectors (`.vector-bg-canvas`), not IDs
+- Ensure consistent HTML structure across containers
 
 ---
 
 ## Tips and Best Practices
 
-1. **Choose the right mode:**
-   - Use **Page Background** for full-page experiences
-   - Use **Component Background** for sections, cards, and hero areas
-
-2. **Optimize for mobile:**
-   - Consider reducing particle count on mobile devices
-   - Test performance on various devices
-
-3. **Color coordination:**
-   - Match the animation colors to your brand palette
-   - Ensure text remains readable against the animation
-
-4. **Content readability:**
-   - Consider adding a semi-transparent overlay for better text readability
-   - Use backdrop-filter for modern browsers
-
-5. **Accessibility:**
-   - Provide sufficient color contrast for text
-   - Consider adding a "reduce motion" option for users with motion sensitivity
+1. **Choose the right mode:** Use **Page Background** for full-page experiences, **Component Background** for sections/cards
+2. **Optimize for mobile:** Consider reducing particle count on mobile devices and test performance
+3. **Color coordination:** Match animation colors to your brand and ensure text readability
+4. **Content readability:** Add semi-transparent overlays or use backdrop-filter for better text contrast
+5. **Accessibility:** Provide sufficient color contrast and consider a "reduce motion" option
 
 ---
 
 ## Need Help?
 
-If you encounter any issues or have questions:
 1. Check the troubleshooting section above
-2. Review the complete examples provided
+2. Review the [example files](../examples/) 
 3. Verify your code matches the exported format
 4. Create an issue on the GitHub repository
 
