@@ -6,7 +6,7 @@ Animate your 2D vector-valued functions into cool 2D particle flow visualization
 
 **[Watch the Project Demo Video](PLACEHOLDER_VIDEO_LINK)** *(Video demonstration coming soon)*
 
-**[Try it Live](https://umer-tariq77400.github.io/vector-animation/vector_animation.html)** - Experience the interactive vector field generator in action!
+**[Try it Live](https://umer-tariq77400.github.io/vector-animation)** - Experience the interactive vector field generator in action!
 
 ## 🌟 Features
 

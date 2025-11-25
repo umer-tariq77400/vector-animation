@@ -425,7 +425,6 @@
             let canvasHeight = 0;
             
             // --- Gemini API State ---
-            const defaultApiKey = "AIzaSyCBGSg3XWax9Sim98Dn73BjDG9Dn7TJH-M";
             let vectorFunction;
             let currentVxString = "Math.sin(x) + Math.sin(y)";
             let currentVyString = "Math.sin(x) - Math.sin(y)";
@@ -502,7 +501,13 @@
              * Fetches from the Gemini API with exponential backoff.
              */
             async function fetchGeminiApi(payload, retries = 3, delay = 1000) {
-                const apiKey = apiKeyInput.value.trim() || defaultApiKey;
+                const apiKey = apiKeyInput.value.trim();
+                
+                // Check if API key is empty
+                if (!apiKey) {
+                    throw new Error("Enter a valid API key");
+                }
+                
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
                 for (let i = 0; i < retries; i++) {
@@ -514,6 +519,10 @@
                         });
 
                         if (!response.ok) {
+                            // Check for authentication errors (401, 403) which indicate invalid API key
+                            if (response.status === 401 || response.status === 403) {
+                                throw new Error("Enter a valid API key");
+                            }
                             throw new Error(`API Error: ${response.status} ${response.statusText}`);
                         }
 
@@ -531,6 +540,10 @@
                         console.error("API call failed:", error);
                         if (i === retries - 1) {
                             throw error; // Re-throw last error
+                        }
+                        // Don't retry on authentication errors
+                        if (error.message === "Enter a valid API key") {
+                            throw error;
                         }
                         await new Promise(res => setTimeout(res, delay));
                         delay *= 2; // Exponential backoff
