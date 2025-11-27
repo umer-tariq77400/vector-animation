@@ -4,7 +4,7 @@ Animate your 2D vector-valued functions into cool 2D particle flow visualization
 
 ## 📹 Demo
 
-**[Watch the Project Demo Video](https://www.linkedin.com/posts/umer-tariq-455b88294_gemini-ai-mathematics-activity-7399044329618575360-L-0K?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEddhIEBkfsyaU_JGbF8-BR6uKav33MuAIw)** *(Video demonstration coming soon)*
+**[Watch the Project Demo Video](https://www.linkedin.com/posts/umer-tariq-455b88294_gemini-ai-mathematics-activity-7399044329618575360-L-0K?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEddhIEBkfsyaU_JGbF8-BR6uKav33MuAIw)**
 
 **[Try it Live](https://umer-tariq77400.github.io/vector-animation)** - Experience the interactive vector field generator in action!
 
